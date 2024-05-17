@@ -1,0 +1,35 @@
+{
+  "name": "cs50-final-project",
+  "version": "1.0.0",
+  "description": "workout log calendar",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/polarcatnean/cs50-final-project.git"
+  },
+  "keywords": [
+    "workout",
+    "log",
+    "calendar"
+  ],
+  "author": "Nean",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/polarcatnean/cs50-final-project/issues"
+  },
+  "homepage": "https://github.com/polarcatnean/cs50-final-project#readme",
+  "dependencies": {
+    "@fullcalendar/core": "^6.1.11",
+    "@fullcalendar/daygrid": "^6.1.11",
+    "@fullcalendar/interaction": "^6.1.11",
+    "@fullcalendar/list": "^6.1.11",
+    "@fullcalendar/timegrid": "^6.1.11"
+  },
+  "devDependencies": {
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4"
+  }
+}
