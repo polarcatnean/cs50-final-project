@@ -164,4 +164,4 @@ cython_debug/
 node_modules/
 test.py
 templates/calendar-demo.html
-templates/script.json
+templates/script.js
