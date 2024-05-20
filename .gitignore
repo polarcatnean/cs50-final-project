@@ -162,6 +162,7 @@ cython_debug/
 #.idea/
 
 node_modules/
+flask_session/
 test.py
 templates/calendar-demo.html
 templates/script.js
