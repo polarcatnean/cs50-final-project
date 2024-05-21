@@ -28,7 +28,8 @@ class Base(DeclarativeBase):
     pass
 
 db = SQLAlchemy(model_class=Base)
-# initialize the app with the extension
+
+# Initialize the app with the extension
 db.init_app(app)
 print("Initialised the app.")
 
@@ -66,7 +67,6 @@ class WorkoutExercise(db.Model):
     sets: Mapped[int] = mapped_column(Integer, nullable=True)
     reps: Mapped[int] = mapped_column(Integer, nullable=True)
     weight_kg: Mapped[float] = mapped_column(Float, nullable=False)  # 0 = bodyweight
-
     
 
 with app.app_context():
@@ -78,9 +78,10 @@ with app.app_context():
 @app.after_request
 def after_request(response):
     """Ensure responses aren't cached"""
-    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-    response.headers["Expires"] = 0
-    response.headers["Pragma"] = "no-cache"
+    # During development, you might want to disable caching to ensure that you're always seeing the most recent version of your site, not a cached version
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate" # tells the client's browser not to cache the response, not to store it, and to validate it
+    response.headers["Expires"] = 0 #  sets the expiration date of the response to the past, which means it's already expired and can't be used from cache.
+    response.headers["Pragma"] = "no-cache" #  older directive to prevent caching, mostly for HTTP/1.0 clients.
     return response
 
 
@@ -102,3 +103,44 @@ def login():
         return redirect("/")
     else:
         return render_template("index.html")
+    
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        password_confirm = request.form.get("confirmation")
+        email = request.form.get("email")
+        if not username:
+            flash("Please enter username.")
+            return render_template("register.html")
+        if not password:
+            flash("Please enter password.")
+            return render_template("register.html")
+        if not email:
+            flash("Please enter email.")
+            return render_template("register.html")
+        if password != password_confirm:
+            flash("Passwords do not match.")
+            return render_template("register.html")
+        # checks if username and email exist
+        if db.session.execute(db.select(User).filter_by(username=username)).first():
+            flash("This username already exists.")
+            return render_template("register.html")
+        if db.session.execute(db.select(User).filter_by(email=email)).first():
+            flash("This email already exists.")
+            return render_template("register.html")
+
+        # hash password
+        password_hash = generate_password_hash(password, method="pbkdf2", salt_length=16)
+
+        # put in db
+        new_user = User(username=username, email=email, password_hash=password_hash)
+        db.session.add(new_user)
+        db.session.commit()
+
+        flash("You are now registered.")
+        return redirect("/login")
+
+    return render_template("register.html")
