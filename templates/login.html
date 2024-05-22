@@ -1,31 +1,27 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Register
+    Sign in
 {% endblock %}
 
 {% block main %}
 <div class="mb-3">
-    <h2>Register</h2>
+    <h2>Sign in</h2>
+    to see your workout log
 </div>
-<form action="/register" method="post">
-    
+<form action="/login" method="post">
     <div class="mb-3"> 
-        <!-- mb-3 = margin bottom of 1rem (16px) -->
         <label for="username" class="form-label">Username</label>
         <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text" required>
-    </div>
-    <div class="mb-3">
-        <label for="email" class="form-label">Email address</label>
-        <input autocomplete="off" type="email" class="form-control mx-auto w-auto" id="email" name="email" placeholder="name@example.com" required>
     </div>
     <div class="mb-3">
         <label for="password" class="form-label">Password</label>
         <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password" required>
     </div>
     <div class="mb-3">
-        <input class="form-control mx-auto w-auto" name="confirmation" placeholder="Confirm password" type="password" required>
+        <button class="btn btn-primary" type="submit">Sign in</button>
     </div>
-    <button class="btn btn-primary" type="submit">Register</button>
+    
 </form>
+No account? <a href="/register">Create one!</a>
 {% endblock %}
