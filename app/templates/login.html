@@ -9,7 +9,7 @@
     <h2>Sign in</h2>
     to see your workout log
 </div>
-<form action="/login" method="post">
+<form action="/auth/login" method="post">
     <div class="mb-3"> 
         <label for="username" class="form-label">Username</label>
         <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text" required>
@@ -23,5 +23,5 @@
     </div>
     
 </form>
-No account? <a href="/register">Create one!</a>
+No account? <a href="/auth/register">Create one!</a>
 {% endblock %}
