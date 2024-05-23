@@ -31,7 +31,8 @@
     "@fullcalendar/list": "^6.1.11",
     "@fullcalendar/timegrid": "^6.1.11",
     "@popperjs/core": "^2.11.8",
-    "bootstrap": "^5.3.3"
+    "bootstrap": "^5.3.3",
+    "flatpickr": "^4.6.13"
   },
   "devDependencies": {
     "@babel/core": "^7.24.5",

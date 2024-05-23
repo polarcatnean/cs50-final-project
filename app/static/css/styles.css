@@ -31,9 +31,8 @@ html, body {
 .progress {
     height: 20px;
     background-color: #ebebeb; /* colour for the empty portion */
-    border-radius: 4px; 
-    overflow: hidden;
 }
+
 /* Styles for the inner progress bar */
 .progress-bar {
     width: 65%; /* set to by dynamic in js */
@@ -46,4 +45,8 @@ html, body {
 /* modal */
 .modal-body {
   text-align: left;
+}
+
+body.modal-open {
+  padding-right: 0 !important;
 }
