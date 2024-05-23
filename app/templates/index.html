@@ -5,5 +5,71 @@
 {% endblock %}
 
 {% block main %}
+<!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#log" data-bs-whatever="@nean">Open modal for @nean</button> -->
+
 <div id='calendar'></div>
+
+<!-- Modal -->
+
+
+<div class="modal fade" id="log-modal" tabindex="-1" aria-labelledby="logModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="logModal">Log Workout</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="mb-3">
+              <label for="Date" class="col-form-label">Date</label>
+              <input type="text" class="form-control" id="date">
+            </div>
+            <div class="form-floating mb-3">
+              <input type="number" class="form-control" id="duration-min" placeholder="Duration (min)">
+              <label for="duration-min" class="col-form-label">Duration (min)</label>
+            </div>
+            <div class="form-floating mb-3">
+              <textarea class="form-control" id="workout-name" placeholder="Enter workout"></textarea>
+              <label for="workout-name">Workout</label>
+            </div>
+
+            <div class="row g-2">
+                <div class="col-md">
+                    <div class="form-floating mb-3">
+                        <select class="form-select" id="workout-type" aria-label="workout type select">
+                        <option selected value="strength">Strength / Weights</option>
+                        <option value="cardio">Cardio</option>
+                        <option value="yoga_pilates">Yoga / Pilates</option>
+                        <option value="stretch">Stretching</option>
+                        </select>
+                        <label for="workout-type">Type</label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating mb-3">
+                        <select class="form-select" id="body-focus" aria-label="body focus select">
+                        <option selected value="full">Full body</option>
+                        <option value="lower">Lower body</option>
+                        <option value="upper">Upper body</option>
+                        </select>
+                        <label for="body-focus">Body focus</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input type="number" class="form-control" id="calories-burned" placeholder="Calories burned (optional)">
+                <label for="calories-burned" class="col-form-label">Calories burned</label>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Workout done!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 {% endblock %}
