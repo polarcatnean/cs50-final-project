@@ -30,6 +30,17 @@ input {
     text-align: center;
   }
 
+  .fc-event {
+    line-height: 2;
+    white-space: normal; /* Allow text to wrap */
+    height: auto !important; /* Ensure the event box height adjusts */
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column; /* Ensure content is stacked vertically */
+    text-align: center;
+}
 
 /* Styles for the progress bar container */
 .progress {
@@ -54,3 +65,5 @@ body.modal-open {
 .modal-body {
   text-align: left;
 }
+
+

@@ -21,7 +21,7 @@ def add_workout():
         duration_min=data['duration_min'],
         calories_burned=data.get('calories_burned') # because this is optional, returns None if empty, prevents "KeyError"
     )
-    
+
     print(new_workout)
     db.session.add(new_workout)
     db.session.commit()
@@ -29,9 +29,26 @@ def add_workout():
     return jsonify({'message': 'Workout logged successfully'})
 
 
-
 @log.route("/edit", methods=["GET", "POST"])
 @login_required
 def edit_workout(id):
     return
 
+@log.route('/load', methods=["GET"])
+@login_required
+def get_log():
+    user_id = session.get("user_id")
+    # only get log from this user_id
+    events = Workout.query.filter_by(user_id=user_id).all()
+    event_list = []
+    for event in events:
+        event_list.append({
+            'id': event.id,
+            'title': f"<b>{event.duration_min} min</b><br>{event.workout_name}",
+            'start': event.date.strftime('%Y-%m-%d'),
+            'end': event.date.strftime('%Y-%m-%d'),
+            'description': event.workout_type,
+            'allDay': True,
+            'color': '#a491c9'  # specify color bg for event boxes
+        })
+    return jsonify(event_list)

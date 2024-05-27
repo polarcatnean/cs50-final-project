@@ -9,8 +9,6 @@ import flatpickr from 'flatpickr';
 import '../css/styles.css'; // my custom css
 
 
-console.log("Hello from Webpack and Bootstrap!");
-
 // Initialise global variables
 let selectedDate = "";
 let clickedDayElement = null;
@@ -49,6 +47,14 @@ document.addEventListener('DOMContentLoaded', function() {
       center: '',
       right: 'today prev,next' 
     },
+    events: '/log/load',  // URL to fetch events from
+    editable: true,
+    eventContent: function(arg) {
+      let customHtml = arg.event.title; 
+      let content = document.createElement('div');
+      content.innerHTML = customHtml;
+      return { domNodes: [content] };
+    },
     datesSet: function() {
         let middleElement = document.querySelectorAll('.fc-toolbar-chunk')[1];
         
@@ -78,6 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
     },
     selectable: false,
     unselectAuto: true,
+    
   })
   calendar.render();
 });
@@ -115,7 +122,7 @@ document.getElementById('log-form').addEventListener('submit', function(event) {
   })
   .then(data => {
       console.log('Success:', data);
-      document.getElementById('log-form').reset(); // Optionally, reset the form
+      document.getElementById('log-form').reset();
   })
   .catch(error => {
       console.error('Error:', error);
@@ -139,8 +146,6 @@ document.getElementById('log-form').addEventListener('submit', function(event) {
   if (clickedDayElement) {
     clickedDayElement.style.backgroundColor = "rgba(188,232,241,.3)";
   }
-
-
 
 });
 
