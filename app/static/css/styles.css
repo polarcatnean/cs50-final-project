@@ -12,6 +12,10 @@ html, body {
   
   }
 
+input {
+  overflow: hidden;
+}
+
 
 #calendar {
     /* max-width: 1100px; */
@@ -43,10 +47,10 @@ html, body {
 
 
 /* modal */
-.modal-body {
-  text-align: left;
-}
-
 body.modal-open {
   padding-right: 0 !important;
+}
+
+.modal-body {
+  text-align: left;
 }

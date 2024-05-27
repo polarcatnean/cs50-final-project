@@ -10,33 +10,35 @@
 <div id='calendar'></div>
 
 <!-- Modal -->
-
-
+<!-- First modal -->
 <div class="modal fade" id="log-modal" tabindex="-1" aria-labelledby="logModal" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
+
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="logModal">Log Workout</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+
         <div class="modal-body">
           <form id="log-form">
+
             <div class="form-floating mb-3">
               <input type="date" class="form-control" id="date">
               <label for="Date" class="col-form-label">Date</label>
             </div>
 
             <div class="row g-2">
-                <div class="col-md">
+                <div class="col">
                     <div class="form-floating mb-3">
-                        <input type="number" class="form-control" id="duration-min" placeholder="Duration (min)" required>
+                        <input type="number" class="form-control" id="duration-min" required>
                         <label for="duration-min" class="col-form-label">Duration (min)</label>
                     </div>
                 </div>
-                <div class="col-md">
+                <div class="col">
                     <div class="form-floating mb-3">
-                        <input type="number" class="form-control" id="calories-burned" placeholder="Calories burned">
-                        <label for="calories-burned" class="col-form-label">Calories burned (optional)</label>
+                        <input type="number" class="form-control" id="calories-burned">
+                        <label for="calories-burned" class="col-form-label">Calories (optional)</label>
                     </div>
                 </div>
             </div>
@@ -47,7 +49,7 @@
             </div>
 
             <div class="row g-2">
-                <div class="col-md">
+                <div class="col">
                     <div class="form-floating mb-3">
                         <select class="form-select" id="workout-type" aria-label="workout type select">
                         <option selected value="strength">Strength / Weights</option>
@@ -58,7 +60,7 @@
                         <label for="workout-type">Type</label>
                     </div>
                 </div>
-                <div class="col-md">
+                <div class="col">
                     <div class="form-floating mb-3">
                         <select class="form-select" id="body-focus" aria-label="body focus select">
                         <option selected value="full">Full body</option>
@@ -72,12 +74,81 @@
 
         </div>
             <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary">Workout done!</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button class="btn btn-primary" data-bs-target="#exercise-log-modal" data-bs-toggle="modal">Log individual exercise</button>
+                <button type="submit" class="btn btn-success">Workout done!</button>
+
             </div>
+        </div>
+
         </form>
+
       </div>
     </div>
+</div>
+
+<!-- Second modal (log individual exercise) -->
+<div class="modal custom-modal-padding fade" id="exercise-log-modal" aria-hidden="true" aria-labelledby="exerciseLogModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exerciseLogModal">Log Exercise</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <form id="exercise-log-form">
+
+          <div class="form-floating mb-3">
+            <select class="form-select" id="body-focus" aria-label="body focus select">
+            <option selected value="full">Full body</option>
+            <option value="lower">Lower body</option>
+            <option value="upper">Upper body</option>
+            </select>
+            <label for="body-focus">Body focus</label>
+          </div>
+
+          <div class="form-floating mb-3">
+            <select class="form-select" id="exerciseSelect" aria-label="Select exercise">
+              <option selected>Select exercise</option>
+              <!-- use jinja loop to pull options from db -->
+              <option value="1">RDL</option>
+              <option value="2">Squat</option>
+              <option value="3">Glute bridge</option>
+            </select>
+            <label for="exerciseSelect">Exercise</label>
+          </div>
+        
+          <div class="row g-2">
+            <div class="col">
+              <div class="form-floating mb-3">
+                <input type="number" class="form-control" id="sets" required>
+                <label for="sets" class="col-form-label">Sets</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3">
+                <input type="number" class="form-control" id="reps" required>
+                <label for="reps" class="col-form-label">Reps</label>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-floating mb-3">
+                <input type="number" class="form-control" id="weight" required>
+                <label for="weight" class="col-form-label">Weight (kg)</label>
+              </div>
+            </div>
+          </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id ="log-more" class="btn btn-primary" data-bs-target="#exercise-log-modal" data-bs-toggle="modal">Log more exercise</button>
+        <button type="submit" class="btn btn-success">Workout done!</button>
+      </div>
+        </form>
+    </div>
   </div>
+</div>
 
 {% endblock %}
