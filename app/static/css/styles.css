@@ -31,7 +31,7 @@ input {
   }
 
   .fc-event {
-    line-height: 2;
+    line-height: 1.5;
     white-space: normal; /* Allow text to wrap */
     height: auto !important; /* Ensure the event box height adjusts */
     padding: 10px;
@@ -40,7 +40,12 @@ input {
     justify-content: center;
     flex-direction: column; /* Ensure content is stacked vertically */
     text-align: center;
+    font-size: 16px;
 }
+  /* .fc-event-title {
+    font-size: 30px;  /* Adjust the size as needed 
+    font-weight: normal; 
+  } */
 
 /* Styles for the progress bar container */
 .progress {

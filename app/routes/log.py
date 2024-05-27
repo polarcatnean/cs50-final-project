@@ -49,6 +49,7 @@ def get_log():
             'end': event.date.strftime('%Y-%m-%d'),
             'description': event.workout_type,
             'allDay': True,
-            'color': '#a491c9'  # specify color bg for event boxes
+            'color': 'white',  # specify color bg for event boxes
+            'textColor': '#a491c9'
         })
     return jsonify(event_list)
