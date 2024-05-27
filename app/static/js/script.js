@@ -16,12 +16,23 @@ let selectedDate = "";
 let clickedDayElement = null;
 let calendar;
 
-// Date format function
+// Date format functions
 function formatDate(dateStr) {
   const date = new Date(dateStr);
   const options = { day: 'numeric', month: 'short', year: 'numeric' };
   return new Intl.DateTimeFormat('en-GB', options).format(date);
 }
+
+function formatDateYMD(dateString) {
+  // Create a new Date object from the input date string
+  const date = new Date(dateString);
+  // Check if the date is valid
+  if (isNaN(date.getTime())) {
+      throw new Error('Invalid date format');
+  }
+  return new Intl.DateTimeFormat('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(date);
+}
+
 
 // Calendar config
 document.addEventListener('DOMContentLoaded', function() {
@@ -78,18 +89,42 @@ document.getElementById('log-form').addEventListener('submit', function(event) {
 
   // Collect form data
   let formData = {
-    date: document.getElementById('date').value,
+    date: formatDateYMD(document.getElementById('date').value),
     duration_min: document.getElementById('duration-min').value,
     calories_burned: document.getElementById('calories-burned').value,
     workout_name: document.getElementById('workout-name').value,
     workout_type: document.getElementById('workout-type').value,
     body_focus: document.getElementById('body-focus').value
   };
+  console.log(JSON.stringify(formData));
+  console.log(formData);
+
+  // Use fetch to send the form data
+  fetch('/log/add', {
+    method: 'POST', 
+    headers: {
+        'Content-Type': 'application/json', // Set the request headers
+    },
+    body: JSON.stringify(formData), // Convert the form data to JSON and send in the request body
+})
+  .then(response => {
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      return response.json();
+  })
+  .then(data => {
+      console.log('Success:', data);
+      document.getElementById('log-form').reset(); // Optionally, reset the form
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });
 
   // add workout event to calendar
-  if (workoutName && selectedDate && duration) {
+  if (formData["date"] && formData["duration_min"] && formData["workout_name"]) {
     calendar.addEvent({
-      title: `${duration} min ${workoutName}`,
+      title: `${formData["duration_min"]} min ${formData["workout_name"]}`,
       start: selectedDate,
       allDay: true,
     });
@@ -105,12 +140,10 @@ document.getElementById('log-form').addEventListener('submit', function(event) {
     clickedDayElement.style.backgroundColor = "rgba(188,232,241,.3)";
   }
 
-  // Clear the form fields after logging
-  document.getElementById('log-form').reset();
+
 
 });
 
-// Adjust Body Padding 
 
 
 // autofocus the sets field in exercise log modal

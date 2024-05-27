@@ -11,6 +11,7 @@ log = Blueprint('log', __name__)
 def add_workout():
     user_id = session.get("user_id")
     data = request.get_json()
+
     new_workout = Workout(
         user_id=user_id,
         date=datetime.strptime(data['date'], '%Y-%m-%d').date(),
@@ -20,9 +21,11 @@ def add_workout():
         duration_min=data['duration_min'],
         calories_burned=data.get('calories_burned') # because this is optional, returns None if empty, prevents "KeyError"
     )
+    
+    print(new_workout)
     db.session.add(new_workout)
     db.session.commit()
-    flash("Workout logged successfully")
+    # flash("Workout logged successfully")
     return jsonify({'message': 'Workout logged successfully'})
 
 
