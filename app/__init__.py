@@ -3,12 +3,17 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from config import Config
 from app.models import db
+from app.helpers import login_required, capitalise
+
 
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    # Custom filter
+    app.jinja_env.filters["capitalise"] = capitalise
+    
     # Initialize plugins
     db.init_app(app)
     Session(app)

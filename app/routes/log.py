@@ -59,3 +59,14 @@ def get_log():
             'textColor': '#7859b5'
         })
     return jsonify(event_list)
+
+
+@log.route('/details/<int:event_id>', methods=["GET"])
+@login_required
+def get_workout_details(event_id):
+    user_id = session.get("user_id")
+    # Replace this with your actual database query
+    event = Workout.query.filter_by(user_id=user_id, id=event_id).first()
+    if event is None:
+        return "Event not found", 404
+    return render_template('workout-details.html', event=event)

@@ -35,15 +35,16 @@ function capitalise(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-// Calendar config
+
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize flatpickr on the date input field
   flatpickr("#date", {
     dateFormat: "j M Y", // Set the desired date format
   });
 
+  // Init Calendar & config
   const calendarEl = document.getElementById('calendar');
-  let workoutDetailsEl = document.getElementById('workout-details');
+  
   calendar = new Calendar(calendarEl, {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
     headerToolbar: {
@@ -88,17 +89,43 @@ document.addEventListener('DOMContentLoaded', function() {
       info.jsEvent.preventDefault();
       let event = info.event; // the associated Event Object
       console.log(event);
-      workoutDetailsEl.innerHTML = '<strong>' + formatDate(event.start) + '</strong><br>' +
-                                   event.extendedProps.workoutName + '<br>' +
-                                  event.extendedProps.duration + ' min ' + capitalise(event.extendedProps.type) + '<br>' + 
-                                  capitalise(event.extendedProps.focus) + ' body<br>';
-      workoutDetailsEl.style.display = 'block';
+      let offcanvasElement = document.getElementById('detail-canvas');
+      let offcanvas = new bootstrap.Offcanvas(offcanvasElement);
+
+      // Fetch the workout details HTML from the server
+      fetch(`/log/details/${event.id}`)
+          .then(response => response.text())
+          .then(html => {
+              let workoutDetailsEl = document.getElementById('workout-details');
+              workoutDetailsEl.innerHTML = html; // Insert the HTML content
+              offcanvas.show(); // Show the offcanvas
+          })
+          .catch(error => {
+              console.error('Error fetching workout details:', error);
+          });
     },
     selectable: false,
     unselectAuto: true,
     
   })
   calendar.render();
+
+  // if strength is selected, toggle log exercise button
+  const workoutTypeElement = document.getElementById('workout-type');
+  const logExerciseButton = document.getElementById('log-exercise-button');
+  function toggleButton() {
+      if (workoutTypeElement.value === 'strength') {
+          logExerciseButton.removeAttribute('disabled');
+          console.log("Button enabled");
+      } else {
+          logExerciseButton.setAttribute('disabled', 'disabled');
+      }
+  }
+  // Initial check
+  toggleButton();
+  // Add event listener for changes
+  workoutTypeElement.addEventListener('change', toggleButton);
+  
 });
 
 
@@ -126,19 +153,31 @@ document.getElementById('log-form').addEventListener('submit', function(event) {
     },
     body: JSON.stringify(formData), // Convert the form data to JSON and send in the request body
 })
-  .then(response => {
-      if (!response.ok) {
-          throw new Error('Network response was not ok');
-      }
-      return response.json();
-  })
-  .then(data => {
-      console.log('Success:', data);
-      document.getElementById('log-form').reset();
-  })
-  .catch(error => {
-      console.error('Error:', error);
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Success:', data);
+        document.getElementById('log-form').reset();
+    })
+    .catch(error => {
+        console.error('Error:', error);
   });
+
+
+
+  // if (document.getElementById('workout-type').value === "strength") {
+  //   let exerciseData = {
+  //     exercise_id: document.getElementById('exercise-id').value,
+  //     sets: document.getElementById('sets').value,
+  //     reps: document.getElementById('reps').value,
+  //     weight_kg: document.getElementById('weight').value 
+  //   }
+
+  // }
 
   // add workout event to calendar
   if (formData["date"] && formData["duration_min"] && formData["workout_name"]) {

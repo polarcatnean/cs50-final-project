@@ -1,0 +1,7 @@
+<strong>{{ event.date.strftime("%d").lstrip('0') }} {{ event.date.strftime("%B %Y") }}</strong><br>
+{{ event.workout_name }}<br>
+{{ event.duration_min }} min {{ event.workout_type | capitalise }}<br>
+{{ event.body_focus | capitalise }} Body<br>
+{% if event.calories_burned %}
+    {{ event.calories_burned }} cal<br>
+{% endif %}

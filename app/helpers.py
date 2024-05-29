@@ -23,3 +23,15 @@ def login_required(f):
         return f(*args, **kwargs)
 
     return decorated_function
+
+
+def capitalise(str):
+    # Split the string into words based on spaces
+    words = str.split()
+    # Capitalize the first letter of each word
+    capitalised_words = [word.capitalize() for word in words]
+    # Join the capitalized words back into a single string
+    capitalised_string = ' '.join(capitalised_words)
+    return capitalised_string
+
+

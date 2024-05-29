@@ -7,9 +7,31 @@
 {% block main %}
 
 <div id='calendar'></div>
-<div id='workout-details'></div>
-<!-- add alert after logging etc -->
+
+<!-- TODO: add alert after logging etc -->
 <div id='alert'></div>
+
+<!-- offcanvas workout details -->
+<div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="detail-canvas" aria-labelledby="workout-detailsLabel">
+
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="workout-detailsLabel">Workout Details</h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+
+  <div class="offcanvas-body">
+    <p>...details will be shown here...</p>
+    <div id="workout-details" class="mb-3"></div>
+    <div id="exercise-details" class="mb-3"></div>
+    
+  </div>
+
+  <div class="offcanvas-footer">
+    <button class="btn btn-secondary" type="button">Edit</button>
+  </div>
+
+</div>
+
 
 <!-- Modal -->
 <!-- First modal -->
@@ -77,7 +99,7 @@
         </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button class="btn btn-primary" data-bs-target="#exercise-log-modal" data-bs-toggle="modal">Log individual exercise</button>
+                <button type="submit" id="log-exercise-button" disabled class="btn btn-primary" data-bs-target="#exercise-log-modal" data-bs-toggle="modal">Log individual exercise</button>
                 <button type="submit" class="btn btn-success">Workout done!</button>
 
             </div>
@@ -112,14 +134,14 @@
           </div>
 
           <div class="form-floating mb-3">
-            <select class="form-select" id="exerciseSelect" aria-label="Select exercise">
+            <select class="form-select" id="exercise-id" aria-label="Select exercise">
               <option selected>Select exercise</option>
               <!-- use jinja loop to pull options from db -->
               <option value="1">RDL</option>
               <option value="2">Squat</option>
               <option value="3">Glute bridge</option>
             </select>
-            <label for="exerciseSelect">Exercise</label>
+            <label for="exercise-id">Exercise</label>
           </div>
         
           <div class="row g-2">
