@@ -47,9 +47,15 @@ def get_log():
             'title': f"<b>{event.duration_min} min</b><br>{event.workout_name}",
             'start': event.date.strftime('%Y-%m-%d'),
             'end': event.date.strftime('%Y-%m-%d'),
-            'description': event.workout_type,
+            'extendedProps': {
+                'workoutName': event.workout_name,
+                'duration': event.duration_min,
+                'type': event.workout_type,
+                'focus': event.body_focus,
+                'calories': event.calories_burned
+            },
             'allDay': True,
-            'color': 'white',  # specify color bg for event boxes
-            'textColor': '#a491c9'
+            'color': '#f2e3fa',  # specify color bg for event boxes
+            'textColor': '#7859b5'
         })
     return jsonify(event_list)

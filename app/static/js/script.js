@@ -14,7 +14,7 @@ let selectedDate = "";
 let clickedDayElement = null;
 let calendar;
 
-// Date format functions
+// Helper functions
 function formatDate(dateStr) {
   const date = new Date(dateStr);
   const options = { day: 'numeric', month: 'short', year: 'numeric' };
@@ -31,6 +31,9 @@ function formatDateYMD(dateString) {
   return new Intl.DateTimeFormat('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(date);
 }
 
+function capitalise(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
 // Calendar config
 document.addEventListener('DOMContentLoaded', function() {
@@ -39,7 +42,8 @@ document.addEventListener('DOMContentLoaded', function() {
     dateFormat: "j M Y", // Set the desired date format
   });
 
-  const calendarEl = document.getElementById('calendar')
+  const calendarEl = document.getElementById('calendar');
+  let workoutDetailsEl = document.getElementById('workout-details');
   calendar = new Calendar(calendarEl, {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
     headerToolbar: {
@@ -47,10 +51,9 @@ document.addEventListener('DOMContentLoaded', function() {
       center: '',
       right: 'today prev,next' 
     },
-    events: '/log/load',  // URL to fetch events from
-    editable: true,
-    eventContent: function(arg) {
-      let customHtml = arg.event.title; 
+    events: '/log/load',  // route to fetch events from
+    eventContent: function(info) {
+      let customHtml = info.event.title; 
       let content = document.createElement('div');
       content.innerHTML = customHtml;
       return { domNodes: [content] };
@@ -80,7 +83,16 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById("date").value = formatDate(selectedDate);
         let logModal = new bootstrap.Modal(document.getElementById('log-modal'), { focus: true });
         logModal.show();
-
+    },
+    eventClick: function(info) {
+      info.jsEvent.preventDefault();
+      let event = info.event; // the associated Event Object
+      console.log(event);
+      workoutDetailsEl.innerHTML = '<strong>' + formatDate(event.start) + '</strong><br>' +
+                                   event.extendedProps.workoutName + '<br>' +
+                                  event.extendedProps.duration + ' min ' + capitalise(event.extendedProps.type) + '<br>' + 
+                                  capitalise(event.extendedProps.focus) + ' body<br>';
+      workoutDetailsEl.style.display = 'block';
     },
     selectable: false,
     unselectAuto: true,
