@@ -89,11 +89,12 @@ document.addEventListener('DOMContentLoaded', function() {
       info.jsEvent.preventDefault();
       let event = info.event; // the associated Event Object
       console.log(event);
+      console.log(`event_id: ${event.id}`);
       let offcanvasElement = document.getElementById('detail-canvas');
       let offcanvas = new bootstrap.Offcanvas(offcanvasElement);
 
       // Fetch the workout details HTML from the server
-      fetch(`/log/details/${event.id}`)
+      fetch(`/log/details/${event.id}`) // **event.id doesn't exist in just logged workout
           .then(response => response.text())
           .then(html => {
               let workoutDetailsEl = document.getElementById('workout-details');
@@ -125,7 +126,7 @@ document.addEventListener('DOMContentLoaded', function() {
   toggleButton();
   // Add event listener for changes
   workoutTypeElement.addEventListener('change', toggleButton);
-  
+
 });
 
 
@@ -161,6 +162,16 @@ document.getElementById('log-form').addEventListener('submit', function(event) {
     })
     .then(data => {
         console.log('Success:', data);
+        const newWorkoutId = data.id; // Get the new workout ID from the response
+        // Add workout event to calendar
+        if (formData["date"] && formData["duration_min"] && formData["workout_name"]) {
+          calendar.addEvent({
+              id: newWorkoutId, // Include the new workout ID in the event object
+              title: `${formData["duration_min"]} min ${formData["workout_name"]}`,
+              start: formData["date"], // Use formData["date"] for the start date
+              allDay: true,
+      });
+  }
         document.getElementById('log-form').reset();
     })
     .catch(error => {
@@ -179,19 +190,13 @@ document.getElementById('log-form').addEventListener('submit', function(event) {
 
   // }
 
-  // add workout event to calendar
-  if (formData["date"] && formData["duration_min"] && formData["workout_name"]) {
-    calendar.addEvent({
-      title: `${formData["duration_min"]} min ${formData["workout_name"]}`,
-      start: selectedDate,
-      allDay: true,
-    });
 
-    // Close the modal
-    let modalElement = document.getElementById('log-modal');
-    let modalInstance = bootstrap.Modal.getInstance(modalElement);
-    modalInstance.hide();
-  }
+
+  // Close the modal
+  let modalElement = document.getElementById('log-modal');
+  let modalInstance = bootstrap.Modal.getInstance(modalElement);
+  modalInstance.hide();
+  
 
   // Change the background color of the clicked date
   if (clickedDayElement) {

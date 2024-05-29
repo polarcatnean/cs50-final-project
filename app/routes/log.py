@@ -25,8 +25,8 @@ def add_workout():
     print(new_workout)
     db.session.add(new_workout)
     db.session.commit()
-    # flash("Workout logged successfully")
-    return jsonify({'message': 'Workout logged successfully'})
+    
+    return jsonify({'message': 'Workout logged successfully', 'id': new_workout.id})
 
 
 @log.route("/edit", methods=["GET", "POST"])
