@@ -1,9 +1,9 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Workout Log
+    Calendar
 {% endblock %}
-
+  
 {% block main %}
 
 <div id='calendar'></div>
@@ -28,8 +28,8 @@
 
   <div class="offcanvas-footer">
     <div class="">
-      <button class="btn btn-secondary me-2" type="button">Edit</button>
-      <button class="btn btn-outline-danger" type="button">Delete Workout</button>
+      <button class="btn btn-secondary me-2" type="button" id="edit-workout">Edit</button>
+      <button class="btn btn-outline-danger" type="button" id="delete-workout">Delete Workout</button>
     </div>
   </div>
 
@@ -51,7 +51,7 @@
           <form id="log-form">
 
             <div class="form-floating mb-3">
-              <input type="date" class="form-control" id="date">
+              <input type="date" class="form-control" id="date" required>
               <label for="Date" class="col-form-label">Date</label>
             </div>
 

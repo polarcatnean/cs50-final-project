@@ -1,5 +1,5 @@
-from flask import Blueprint, jsonify, render_template, redirect, url_for, request, session, flash
-from app.models import db, Workout
+from flask import Blueprint, jsonify, render_template, redirect, url_for, request, session
+from app.models import db, Workout, WorkoutExercise
 from datetime import datetime
 from app.helpers import login_required
 
@@ -26,13 +26,56 @@ def add_workout():
     db.session.add(new_workout)
     db.session.commit()
     
-    return jsonify({'message': 'Workout logged successfully', 'id': new_workout.id})
+    return jsonify({'message': 'Workout logged successfully', 'id': new_workout.id}) # return autoincremented ID to JS
 
 
-@log.route("/edit", methods=["GET", "POST"])
+@log.route("/add_exercise", methods=["POST"])
 @login_required
-def edit_workout(id):
-    return
+def add_exercise():
+    user_id = session.get("user_id")
+    data = request.get_json()
+
+    new_exercise = WorkoutExercise(
+        workout_id=data['workout_id'],
+        exercise_id=data['exercise_id'],
+        sets=data['sets'],
+        reps=data['reps'],
+        weight_kg=data['weight']
+    )
+
+    db.session.add(new_exercise)
+    db.session.commit()
+    
+    return jsonify({'message': 'Exercise logged successfully', 'id': new_exercise.id})
+
+
+@log.route("/delete/<int:workout_id>", methods=["DELETE"])
+@login_required
+def delete_workout(workout_id):
+    user_id = session.get("user_id")
+    workout = Workout.query.filter_by(id=workout_id, user_id=user_id).first()
+    
+    if not workout:
+        return jsonify({"error": "Workout not found"}), 404
+
+    db.session.delete(workout)
+    db.session.commit()
+    
+    return jsonify({"message": "Workout deleted successfully"}), 200
+
+
+# TODO edit route 
+@log.route("/edit/<int:workout_id>", methods=["POST"])
+@login_required
+def edit_workout(workout_id):
+    user_id = session.get("user_id")
+    workout = Workout.query.filter_by(id=workout_id, user_id=user_id).first()
+    
+    if not workout:
+        return jsonify({"error": "Workout not found"}), 404
+    
+    return jsonify({"message": "Workout edited successfully"}), 200
+
 
 @log.route('/load', methods=["GET"])
 @login_required
@@ -67,6 +110,9 @@ def get_workout_details(event_id):
     user_id = session.get("user_id")
     # Replace this with your actual database query
     event = Workout.query.filter_by(user_id=user_id, id=event_id).first()
+    exercise = WorkoutExercise.query.filter_by(user_id=user_id, id=event_id)
+
     if event is None:
         return "Event not found", 404
+    
     return render_template('workout-details.html', event=event)

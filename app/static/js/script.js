@@ -11,6 +11,7 @@ import '../css/styles.css'; // my custom css
 
 // Initialise global variables
 let selectedDate = "";
+let selectedWorkoutId = "";
 let clickedDayElement = null;
 let calendar;
 
@@ -35,7 +36,7 @@ function capitalise(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-
+// After HTML is loaded
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize flatpickr on the date input field
   flatpickr("#date", {
@@ -88,13 +89,14 @@ document.addEventListener('DOMContentLoaded', function() {
     eventClick: function(info) {
       info.jsEvent.preventDefault();
       let event = info.event; // the associated Event Object
+      selectedWorkoutId = event.id;
       console.log(event);
-      console.log(`event_id: ${event.id}`);
+      console.log(`selected workout id: ${selectedWorkoutId}`);
       let offcanvasElement = document.getElementById('detail-canvas');
       let offcanvas = new bootstrap.Offcanvas(offcanvasElement);
 
       // Fetch the workout details HTML from the server
-      fetch(`/log/details/${event.id}`) // **event.id doesn't exist in just logged workout
+      fetch(`/log/details/${event.id}`)
           .then(response => response.text())
           .then(html => {
               let workoutDetailsEl = document.getElementById('workout-details');
@@ -111,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
   })
   calendar.render();
 
-  // if strength is selected, toggle log exercise button
+  // Enable log exercise button based on workout type
   const workoutTypeElement = document.getElementById('workout-type');
   const logExerciseButton = document.getElementById('log-exercise-button');
   function toggleButton() {
@@ -127,10 +129,23 @@ document.addEventListener('DOMContentLoaded', function() {
   // Add event listener for changes
   workoutTypeElement.addEventListener('change', toggleButton);
 
+  // Delete workout button
+  const deleteWorkoutButton = document.getElementById('delete-workout');
+  deleteWorkoutButton.addEventListener('click', function() {
+    if (confirm('Are you sure you want to delete this workout?')) {
+        deleteWorkout(selectedWorkoutId);
+    }
+  });
+  // Edit workout button
+  const editWorkoutButton = document.getElementById('edit-workout');
+  editWorkoutButton.addEventListener('click', function() {
+  });
+
 });
 
 
 // Handle form submission in the modal
+// Workout submission
 document.getElementById('log-form').addEventListener('submit', function(event) {
   event.preventDefault(); // Prevent the default form submission behavior
 
@@ -153,42 +168,31 @@ document.getElementById('log-form').addEventListener('submit', function(event) {
         'Content-Type': 'application/json', // Set the request headers
     },
     body: JSON.stringify(formData), // Convert the form data to JSON and send in the request body
-})
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Success:', data);
-        const newWorkoutId = data.id; // Get the new workout ID from the response
-        // Add workout event to calendar
-        if (formData["date"] && formData["duration_min"] && formData["workout_name"]) {
-          calendar.addEvent({
-              id: newWorkoutId, // Include the new workout ID in the event object
-              title: `${formData["duration_min"]} min ${formData["workout_name"]}`,
-              start: formData["date"], // Use formData["date"] for the start date
-              allDay: true,
-      });
-  }
-        document.getElementById('log-form').reset();
-    })
-    .catch(error => {
-        console.error('Error:', error);
+  })
+  .then(response => {
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      return response.json();
+  })
+  .then(data => {
+      console.log('Success:', data);
+      const newWorkoutId = data.id; // Get the new workout ID from the response
+      // Add workout event to calendar
+      // TODO: validate input
+      if (formData["date"] && formData["duration_min"] && formData["workout_name"]) {
+        calendar.addEvent({
+            id: newWorkoutId, // Include the new workout ID in the event object
+            title: `${formData["duration_min"]} min ${formData["workout_name"]}`,
+            start: formData["date"], // Use formData["date"] for the start date
+            allDay: true,
+        });
+      }
+    document.getElementById('log-form').reset();
+  })
+  .catch(error => {
+      console.error('Error:', error);
   });
-
-
-
-  // if (document.getElementById('workout-type').value === "strength") {
-  //   let exerciseData = {
-  //     exercise_id: document.getElementById('exercise-id').value,
-  //     sets: document.getElementById('sets').value,
-  //     reps: document.getElementById('reps').value,
-  //     weight_kg: document.getElementById('weight').value 
-  //   }
-
-  // }
 
 
 
@@ -206,11 +210,39 @@ document.getElementById('log-form').addEventListener('submit', function(event) {
 });
 
 
-
 // autofocus the sets field in exercise log modal
-let exerciseLogModal = document.getElementById('exercise-log-modal');
+const exerciseLogModal = document.getElementById('exercise-log-modal');
 exerciseLogModal.addEventListener('shown.bs.modal', function () {
-  let input = document.getElementById('sets');
+  const input = document.getElementById('sets');
   input.focus();
 });
 
+
+// Delete workout functions
+function deleteWorkout(workoutId) {
+  fetch(`/log/delete/${workoutId}`, {
+      method: 'DELETE',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+  })
+  .then(response => {
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      return response.json();
+  })
+  .then(data => {
+      console.log('Success:', data);
+      // Optionally, remove the workout from the DOM or refresh the page
+      alert('Workout deleted successfully');
+      location.reload(); // Refresh the page to reflect changes
+  })
+  .catch(error => {
+      console.error('Error:', error);
+      alert('An error occurred while deleting the workout.');
+  });
+}
+
+
+// TODO: edit workout function
