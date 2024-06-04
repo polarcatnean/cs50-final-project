@@ -5,23 +5,25 @@
 {% endblock %}
 
 {% block main %}
-<div class="mb-3">
-    <h2>Sign in</h2>
-    to see your workout log
+<div class="text-center">
+    <div class="mb-3">
+        <h2>Sign in</h2>
+        to see your workout log
+    </div>
+    <form action="/auth/login" method="post">
+        <div class="mb-3"> 
+            <label for="username" class="form-label">Username</label>
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password" required>
+        </div>
+        <div class="mb-3">
+            <button class="btn btn-primary" type="submit">Sign in</button>
+        </div>
+        
+    </form>
+    No account? <a href="/auth/register">Create one!</a>
 </div>
-<form action="/auth/login" method="post">
-    <div class="mb-3"> 
-        <label for="username" class="form-label">Username</label>
-        <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text" required>
-    </div>
-    <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password" required>
-    </div>
-    <div class="mb-3">
-        <button class="btn btn-primary" type="submit">Sign in</button>
-    </div>
-    
-</form>
-No account? <a href="/auth/register">Create one!</a>
 {% endblock %}
