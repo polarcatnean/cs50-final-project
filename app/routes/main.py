@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, session, send_from_directory
+from flask import Blueprint, redirect, render_template, session, send_from_directory
 from app.models import db, User
 from app.helpers import login_required
 import os
@@ -11,6 +11,8 @@ main = Blueprint('main', __name__)
 @login_required
 def index():
     user = db.session.scalars(db.select(User).filter_by(id=session["user_id"])).first()
+    if user is None:
+        return redirect("auth/login")
     return render_template("index.html", username=user.username)
 
 
