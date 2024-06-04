@@ -30,15 +30,17 @@ class Workout(db.Model):
 class Exercise(db.Model): # database of info for each exercise for weight training
     __tablename__ = 'exercises'
     id: Mapped[int] = mapped_column(primary_key=True)
-    workout_id: Mapped[int] = mapped_column(db.ForeignKey('workouts.id'), nullable=False)
-    name: Mapped[str] = mapped_column(String(50), nullable=False)  # RDL, squat, etc
-    muscle_group: Mapped[str] = mapped_column(String(50), nullable=False)  # quads, biceps, back, legs, etc
+    name: Mapped[str] = mapped_column(String(100), nullable=False)  # RDL, squat, etc
+    body_focus: Mapped[str] = mapped_column(String(50), nullable=False)  # upper, lower, full body
+    muscle_group: Mapped[str] = mapped_column(String(200), nullable=False)  # quads, biceps, back, legs, etc
+    muscle_group_secondary: Mapped[str] = mapped_column(String(200), nullable=True)
     
 class WorkoutExercise(db.Model):
     __tablename__ = 'workout_exercises'
     id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(db.ForeignKey('users.id'), nullable=False)
     workout_id: Mapped[int] = mapped_column(db.ForeignKey('workouts.id'), nullable=False)
     exercise_id: Mapped[int] = mapped_column(db.ForeignKey('exercises.id'), nullable=False)
-    sets: Mapped[int] = mapped_column(nullable=True)
-    reps: Mapped[int] = mapped_column(nullable=True)
+    sets: Mapped[int] = mapped_column(nullable=False)
+    reps: Mapped[int] = mapped_column(nullable=False)
     weight_kg: Mapped[float] = mapped_column(nullable=False)  # 0 = bodyweight
