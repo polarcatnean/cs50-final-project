@@ -123,4 +123,15 @@ def get_workout_details(event_id):
     if event is None:
         return "Event not found", 404
     
-    return render_template('workout-details.html', event=event, exercises=exercises)
+    muscle_groups = set()
+    secondary_muscle_groups = set()
+    for exercise in exercises:
+        if exercise.info_exercise:
+            muscle_groups.update(exercise.info_exercise.muscle_group.split(","))
+            if exercise.info_exercise.muscle_group_secondary:
+                secondary_muscle_groups.add(exercise.info_exercise.muscle_group_secondary)
+    
+    muscle_groups = sorted(muscle_groups)
+    secondary_muscle_groups = sorted(secondary_muscle_groups)
+
+    return render_template('workout-details.html', event=event, exercises=exercises, muscle_groups=muscle_groups, secondary_muscle_groups=secondary_muscle_groups)

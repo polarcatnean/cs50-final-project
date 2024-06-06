@@ -1,6 +1,6 @@
 <div class="mb-3">
     <strong>{{ event.date.strftime("%d").lstrip('0') }} {{ event.date.strftime("%B %Y") }}</strong><br>
-    {{ event.workout_name }}<br>
+    {{ event.workout_name | capitalise }}<br>
     {{ event.duration_min }} min {{ event.workout_type | capitalise }}<br>
     {{ event.body_focus | capitalise }} Body<br>
     {% if event.calories_burned %}
@@ -10,21 +10,50 @@
 
 <div class="mb-3">
     {% if exercises %}
-        <ul>
+    <table class="table table-dark">
+        <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Exercise</th>
+              <th scope="col">Sets</th>
+              <th scope="col">Reps</th>
+              <th scope="col">Weight</th>
+            </tr>
+        </thead>
+        <tbody>
         {% for exercise in exercises %}
-            <li>
-                {% set exercise_details = exercise.info_exercise %} <!-- the relationship is set up in the models -->
-                <strong>{{ loop.index }}. {{ exercise_details.name }}</strong><br>
-                Sets: {{ exercise.sets }}<br>
-                Reps: {{ exercise.reps }}<br>
-                Weight: {{ exercise.weight_kg }} kg<br>
-                Muscle Group: {{ exercise_details.muscle_group }}<br>
-                {% if exercise_details.muscle_group_secondary %}
-                    Secondary Muscle Group: {{ exercise_details.muscle_group_secondary }}<br>
-                {% endif %}
-            </li>
+            {% set exercise_details = exercise.info_exercise %} <!-- the relationship is set up in the models -->
+            <tr>
+                <th scope="row">{{ loop.index }}</th>
+                <td>{{ exercise_details.name | default('Exercise not found') |  capitalise }}</td>
+                <td>{{ exercise.sets }}</td>
+                <td>{{ exercise.reps }}</td>
+                <td>{{ exercise.weight_kg }} kg</td>
+            </tr>
         {% endfor %}
-        </ul>
+        </tbody>
+    </table>
+    <div class="mb-3">
+        <p>
+            <strong>Muscle groups worked:</strong>
+            <br>
+            {% if muscle_groups %}
+                {{ muscle_groups | join(', ') }}
+            {% else %}
+                <p>No muscle groups found for this workout.</p>
+            {% endif %}
+        </p>
+        <p>
+            <strong>Secondary muscle groups worked:</strong>
+            <br>
+            {% if secondary_muscle_groups %}
+                {{ secondary_muscle_groups | join(', ') }}
+            {% else %}
+                <p>No secondary muscle groups for this workout.</p>
+            {% endif %}
+        </p>
+    </div>
+
     {% else %}
         <p>No individual exercises logged for this workout.</p>
     {% endif %}
