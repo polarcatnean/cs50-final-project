@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, render_template, redirect, url_for, request, session
-from app.models import db, Workout, WorkoutExercise
+from app.models import db, Exercise, Workout, WorkoutExercise
 from datetime import datetime
 from app.helpers import login_required
 
@@ -102,6 +102,14 @@ def get_log():
             'textColor': '#7859b5'
         })
     return jsonify(event_list)
+
+
+@log.route('/load_exercises', methods=['GET'])
+def load_exercises():
+    body_focus = request.args.get('body_focus')
+    exercises = Exercise.query.filter_by(body_focus=body_focus).all()
+    exercise_list = [{"id": exercise.id, "name": exercise.name} for exercise in exercises]
+    return jsonify(exercise_list)
 
 
 @log.route('/details/<int:event_id>', methods=["GET"])

@@ -89,7 +89,7 @@
                 </div>
                 <div class="col">
                     <div class="form-floating mb-3">
-                        <select class="form-select" id="body-focus" aria-label="body focus select">
+                        <select class="form-select" id="body-focus-1" aria-label="body focus select">
                         <option selected value="full">Full body</option>
                         <option value="lower">Lower body</option>
                         <option value="upper">Upper body</option>
@@ -128,7 +128,7 @@
         <form id="exercise-log-form">
 
           <div class="form-floating mb-3">
-            <select class="form-select" id="body-focus" aria-label="body focus select">
+            <select class="form-select" id="body-focus-2" aria-label="body focus select">
             <option value="full">Full body</option>
             <option value="lower">Lower body</option>
             <option value="upper">Upper body</option>
@@ -139,10 +139,7 @@
           <div class="form-floating mb-3">
             <select class="form-select" id="exercise-id" aria-label="Select exercise">
               <option selected>Select exercise</option>
-              <!-- use jinja loop to pull options from db -->
-              <option value="1">RDL</option>
-              <option value="2">Squat</option>
-              <option value="3">Glute bridge</option>
+              <!-- Options will be populated dynamically -->
             </select>
             <label for="exercise-id">Exercise</label>
           </div>

@@ -36,6 +36,54 @@ function capitalise(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
+// Load exercise options according to bodyfocus
+function fetchExercises(selectedBodyFocus) {
+  fetch(`/log/load_exercises?body_focus=${selectedBodyFocus}`)
+      .then(response => response.json())
+      .then(data => {
+          const exerciseSelect = document.getElementById('exercise-id');
+          exerciseSelect.innerHTML = '<option selected>Select exercise</option>';
+          data.forEach(exercise => {
+              const option = document.createElement('option');
+              option.value = exercise.id;
+              option.textContent = capitalise(exercise.name);
+              exerciseSelect.appendChild(option);
+          });
+      })
+      .catch(error => console.error('Error fetching exercises:', error));
+}
+
+// Delete workout 
+function deleteWorkout(workoutId) {
+  fetch(`/log/delete/${workoutId}`, {
+      method: 'DELETE',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+  })
+  .then(response => {
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      return response.json();
+  })
+  .then(data => {
+      console.log('Success:', data);
+      // Optionally, remove the workout from the DOM or refresh the page
+      alert('Workout deleted successfully');
+      location.reload(); // Refresh the page to reflect changes
+  })
+  .catch(error => {
+      console.error('Error:', error);
+      alert('An error occurred while deleting the workout.');
+  });
+}
+
+// TODO: edit workout function
+
+
+
+
 // After HTML is loaded
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize flatpickr on the date input field
@@ -113,7 +161,8 @@ document.addEventListener('DOMContentLoaded', function() {
   })
   calendar.render();
 
-  // Enable log exercise button based on workout type
+
+  // >> Enable log exercise button based on workout type
   const workoutTypeElement = document.getElementById('workout-type');
   const logExerciseButton = document.getElementById('log-exercise-button');
   function toggleButton() {
@@ -129,18 +178,20 @@ document.addEventListener('DOMContentLoaded', function() {
   // Add event listener for changes
   workoutTypeElement.addEventListener('change', toggleButton);
 
-  // Delete workout button
+
+  // >> Delete workout button
   const deleteWorkoutButton = document.getElementById('delete-workout');
   deleteWorkoutButton.addEventListener('click', function() {
     if (confirm('Are you sure you want to delete this workout?')) {
         deleteWorkout(selectedWorkoutId);
     }
   });
-  // Edit workout button
+  // TODO: Edit workout button
   const editWorkoutButton = document.getElementById('edit-workout');
   editWorkoutButton.addEventListener('click', function() {
   });
 
+// DOMContentLoaded closed
 });
 
 
@@ -156,7 +207,7 @@ document.getElementById('log-form').addEventListener('submit', function(event) {
     calories_burned: document.getElementById('calories-burned').value,
     workout_name: document.getElementById('workout-name').value,
     workout_type: document.getElementById('workout-type').value,
-    body_focus: document.getElementById('body-focus').value
+    body_focus: document.getElementById('body-focus-1').value
   };
   console.log(JSON.stringify(formData));
   console.log(formData);
@@ -194,55 +245,35 @@ document.getElementById('log-form').addEventListener('submit', function(event) {
       console.error('Error:', error);
   });
 
-
-
   // Close the modal
   let modalElement = document.getElementById('log-modal');
   let modalInstance = bootstrap.Modal.getInstance(modalElement);
   modalInstance.hide();
-  
 
   // Change the background color of the clicked date
   if (clickedDayElement) {
     clickedDayElement.style.backgroundColor = "rgba(188,232,241,.3)";
   }
-
+// Form submission closed
 });
 
-
-// autofocus the sets field in exercise log modal
+// transfer body focus to the exercise log form & autofocus the sets field
 const exerciseLogModal = document.getElementById('exercise-log-modal');
-exerciseLogModal.addEventListener('shown.bs.modal', function () {
-  const input = document.getElementById('sets');
-  input.focus();
+exerciseLogModal.addEventListener('show.bs.modal', function() {
+  const bodyFocus1Value = document.getElementById('body-focus-1').value;
+  document.getElementById('body-focus-2').value = bodyFocus1Value;
+  // init exercise dropdown choices
+  fetchExercises(bodyFocus1Value);
+  const setField = document.getElementById('sets');
+  setField.focus();
+  // Exercise selector dropdown change listener
+  const bodyFocusSelect = document.getElementById('body-focus-2');
+  bodyFocusSelect.addEventListener('change', function() {
+    const selectedBodyFocus = bodyFocusSelect.value;
+    fetchExercises(selectedBodyFocus);
+  });
 });
 
 
-// Delete workout functions
-function deleteWorkout(workoutId) {
-  fetch(`/log/delete/${workoutId}`, {
-      method: 'DELETE',
-      headers: {
-          'Content-Type': 'application/json',
-      },
-  })
-  .then(response => {
-      if (!response.ok) {
-          throw new Error('Network response was not ok');
-      }
-      return response.json();
-  })
-  .then(data => {
-      console.log('Success:', data);
-      // Optionally, remove the workout from the DOM or refresh the page
-      alert('Workout deleted successfully');
-      location.reload(); // Refresh the page to reflect changes
-  })
-  .catch(error => {
-      console.error('Error:', error);
-      alert('An error occurred while deleting the workout.');
-  });
-}
 
 
-// TODO: edit workout function
