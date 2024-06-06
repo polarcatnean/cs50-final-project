@@ -1,7 +1,31 @@
-<strong>{{ event.date.strftime("%d").lstrip('0') }} {{ event.date.strftime("%B %Y") }}</strong><br>
-{{ event.workout_name }}<br>
-{{ event.duration_min }} min {{ event.workout_type | capitalise }}<br>
-{{ event.body_focus | capitalise }} Body<br>
-{% if event.calories_burned %}
-    {{ event.calories_burned }} cal<br>
-{% endif %}
+<div class="mb-3">
+    <strong>{{ event.date.strftime("%d").lstrip('0') }} {{ event.date.strftime("%B %Y") }}</strong><br>
+    {{ event.workout_name }}<br>
+    {{ event.duration_min }} min {{ event.workout_type | capitalise }}<br>
+    {{ event.body_focus | capitalise }} Body<br>
+    {% if event.calories_burned %}
+        {{ event.calories_burned }} cal<br>
+    {% endif %}
+</div>
+
+<div class="mb-3">
+    {% if exercises %}
+        <ul>
+        {% for exercise in exercises %}
+            <li>
+                {% set exercise_details = exercise.info_exercise %} <!-- the relationship is set up in the models -->
+                <strong>{{ loop.index }}. {{ exercise_details.name }}</strong><br>
+                Sets: {{ exercise.sets }}<br>
+                Reps: {{ exercise.reps }}<br>
+                Weight: {{ exercise.weight_kg }} kg<br>
+                Muscle Group: {{ exercise_details.muscle_group }}<br>
+                {% if exercise_details.muscle_group_secondary %}
+                    Secondary Muscle Group: {{ exercise_details.muscle_group_secondary }}<br>
+                {% endif %}
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No individual exercises logged for this workout.</p>
+    {% endif %}
+</div>

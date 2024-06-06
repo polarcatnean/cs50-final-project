@@ -118,9 +118,9 @@ def get_workout_details(event_id):
     user_id = session.get("user_id")
     # Replace this with your actual database query
     event = Workout.query.filter_by(user_id=user_id, id=event_id).first()
-    exercise = WorkoutExercise.query.filter_by(user_id=user_id, id=event_id)
+    exercises = WorkoutExercise.query.filter_by(user_id=user_id, workout_id=event_id).all()
 
     if event is None:
         return "Event not found", 404
     
-    return render_template('workout-details.html', event=event)
+    return render_template('workout-details.html', event=event, exercises=exercises)

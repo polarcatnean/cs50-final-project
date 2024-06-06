@@ -34,6 +34,7 @@ class Exercise(db.Model): # database of info for each exercise for weight traini
     body_focus: Mapped[str] = mapped_column(String(50), nullable=False)  # upper, lower, full body
     muscle_group: Mapped[str] = mapped_column(String(200), nullable=False)  # quads, biceps, back, legs, etc
     muscle_group_secondary: Mapped[str] = mapped_column(String(200), nullable=True)
+    # The backref creates a "workout_exercises" attribute on this model
     
 class WorkoutExercise(db.Model):
     __tablename__ = 'workout_exercises'
@@ -44,3 +45,6 @@ class WorkoutExercise(db.Model):
     sets: Mapped[int] = mapped_column(nullable=False)
     reps: Mapped[int] = mapped_column(nullable=False)
     weight_kg: Mapped[float] = mapped_column(nullable=False)  # 0 = bodyweight
+
+    # Relationships
+    info_exercise = db.relationship('Exercise', backref='workout_exercises')
