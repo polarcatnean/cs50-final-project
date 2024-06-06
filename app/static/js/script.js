@@ -13,6 +13,7 @@ import '../css/styles.css'; // my custom css
 let selectedDate = "";
 let selectedWorkoutId = "";
 let loggingWorkoutId = "";
+let selectedBodyFocus = "";
 let clickedDayElement = null;
 let calendar;
 
@@ -260,21 +261,19 @@ document.getElementById('log-form').addEventListener('submit', function(event) {
 // transfer body focus to the exercise log form & autofocus the sets field
 const exerciseLogModal = document.getElementById('exercise-log-modal');
 exerciseLogModal.addEventListener('show.bs.modal', function() {
-  const bodyFocus1Value = document.getElementById('body-focus-1').value;
-  document.getElementById('body-focus-2').value = bodyFocus1Value;
+  selectedBodyFocus = document.getElementById('body-focus-1').value;
+  document.getElementById('body-focus-2').value = selectedBodyFocus;
   // init exercise dropdown choices
-  fetchExercises(bodyFocus1Value);
+  fetchExercises(selectedBodyFocus);
   const setField = document.getElementById('sets');
   setField.focus();
   // Exercise selector dropdown change listener
   const bodyFocusSelect = document.getElementById('body-focus-2');
   bodyFocusSelect.addEventListener('change', function() {
-    const selectedBodyFocus = bodyFocusSelect.value;
+    selectedBodyFocus = bodyFocusSelect.value;
     fetchExercises(selectedBodyFocus);
   });
 });
-
-
 
 
 // Log exercise submission
@@ -306,6 +305,7 @@ document.getElementById('exercise-log-form').addEventListener('submit', function
   .then(data => {
       console.log('Success:', data);
       document.getElementById('exercise-log-form').reset();
+      document.getElementById('body-focus-2').value = selectedBodyFocus;
   })
   .catch(error => {
       console.error('Error:', error);
