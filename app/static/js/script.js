@@ -12,6 +12,7 @@ import '../css/styles.css'; // my custom css
 // Initialise global variables
 let selectedDate = "";
 let selectedWorkoutId = "";
+let loggingWorkoutId = "";
 let clickedDayElement = null;
 let calendar;
 
@@ -70,7 +71,6 @@ function deleteWorkout(workoutId) {
   .then(data => {
       console.log('Success:', data);
       // Optionally, remove the workout from the DOM or refresh the page
-      alert('Workout deleted successfully');
       location.reload(); // Refresh the page to reflect changes
   })
   .catch(error => {
@@ -138,8 +138,8 @@ document.addEventListener('DOMContentLoaded', function() {
       info.jsEvent.preventDefault();
       let event = info.event; // the associated Event Object
       selectedWorkoutId = event.id;
-      console.log(event);
-      console.log(`selected workout id: ${selectedWorkoutId}`);
+      console.log(`eventClicked: ${event}`);
+      console.log(`selectedWorkoutId: ${selectedWorkoutId}`);
       let offcanvasElement = document.getElementById('detail-canvas');
       let offcanvas = new bootstrap.Offcanvas(offcanvasElement);
 
@@ -228,18 +228,18 @@ document.getElementById('log-form').addEventListener('submit', function(event) {
   })
   .then(data => {
       console.log('Success:', data);
-      const newWorkoutId = data.id; // Get the new workout ID from the response
+      loggingWorkoutId = data.id; // Get the new workout ID from the response
       // Add workout event to calendar
       // TODO: validate input
       if (formData["date"] && formData["duration_min"] && formData["workout_name"]) {
         calendar.addEvent({
-            id: newWorkoutId, // Include the new workout ID in the event object
+            id: loggingWorkoutId, // Include the new workout ID in the event object
             title: `${formData["duration_min"]} min ${formData["workout_name"]}`,
             start: formData["date"], // Use formData["date"] for the start date
             allDay: true,
         });
       }
-    document.getElementById('log-form').reset();
+      document.getElementById('log-form').reset();
   })
   .catch(error => {
       console.error('Error:', error);
@@ -254,7 +254,7 @@ document.getElementById('log-form').addEventListener('submit', function(event) {
   if (clickedDayElement) {
     clickedDayElement.style.backgroundColor = "rgba(188,232,241,.3)";
   }
-// Form submission closed
+// Workout submission closed
 });
 
 // transfer body focus to the exercise log form & autofocus the sets field
@@ -277,3 +277,43 @@ exerciseLogModal.addEventListener('show.bs.modal', function() {
 
 
 
+// Log exercise submission
+document.getElementById('exercise-log-form').addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  // Collect form data
+  let exerciseData = {
+    workout_id: loggingWorkoutId,
+    exercise_id: document.getElementById('exercise-id').value,
+    sets: document.getElementById('sets').value,
+    reps: document.getElementById('reps').value,
+    weight: document.getElementById('weight').value,
+  };
+
+  fetch('/log/add_exercise', {
+    method: 'POST', 
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(exerciseData) 
+  })
+  .then(response => {
+    if (!response.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(data => {
+      console.log('Success:', data);
+      document.getElementById('exercise-log-form').reset();
+  })
+  .catch(error => {
+      console.error('Error:', error);
+  });
+});
+
+// close the exercise log modal when clicking Workout Done button
+document.getElementById('workout-done').addEventListener('click', function() {
+  let exerciseLogModalInstance = bootstrap.Modal.getInstance(exerciseLogModal);
+  exerciseLogModalInstance.hide();
+});

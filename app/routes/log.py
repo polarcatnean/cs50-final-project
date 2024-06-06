@@ -22,7 +22,6 @@ def add_workout():
         calories_burned=data.get('calories_burned') # because this is optional, returns None if empty, prevents "KeyError"
     )
 
-    print(new_workout)
     db.session.add(new_workout)
     db.session.commit()
     
@@ -36,6 +35,7 @@ def add_exercise():
     data = request.get_json()
 
     new_exercise = WorkoutExercise(
+        user_id=user_id,
         workout_id=data['workout_id'],
         exercise_id=data['exercise_id'],
         sets=data['sets'],
@@ -46,7 +46,7 @@ def add_exercise():
     db.session.add(new_exercise)
     db.session.commit()
     
-    return jsonify({'message': 'Exercise logged successfully', 'id': new_exercise.id})
+    return jsonify({'message': 'Exercise logged successfully', 'workoutExerciseId': new_exercise.id})
 
 
 @log.route("/delete/<int:workout_id>", methods=["DELETE"])
