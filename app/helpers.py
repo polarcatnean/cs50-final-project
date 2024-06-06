@@ -26,6 +26,8 @@ def login_required(f):
 
 
 def capitalise(str):
+    if str is None:
+        return ""
     # Split the string into words based on spaces
     words = str.split()
     # Capitalize the first letter of each word
