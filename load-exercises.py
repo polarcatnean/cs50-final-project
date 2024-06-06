@@ -26,7 +26,7 @@ for index, row in df.iterrows():
     exercise = Exercise(
         name=row['name'],
         body_focus=row['body_focus'],
-        muscle_group=row['muscle_group'],
+        muscle_group=row['muscle_group'].replace(", ", ","),
         muscle_group_secondary=row.get('muscle_group_secondary', None)
     )
     exercises.append(exercise)
