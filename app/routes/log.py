@@ -88,6 +88,7 @@ def get_log():
         event_list.append({
             'id': event.id,
             'title': f"<b>{event.duration_min} min</b><br>{event.workout_name}",
+            # 'title': f"{event.duration_min} min {event.workout_name}",
             'start': event.date.strftime('%Y-%m-%d'),
             'end': event.date.strftime('%Y-%m-%d'),
             'extendedProps': {
@@ -98,8 +99,6 @@ def get_log():
                 'calories': event.calories_burned
             },
             'allDay': True,
-            'color': '#f2e3fa',  # specify color bg for event boxes
-            'textColor': '#7859b5'
         })
     return jsonify(event_list)
 

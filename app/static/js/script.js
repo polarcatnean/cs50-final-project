@@ -102,6 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
       center: '',
       right: 'today prev,next' 
     },
+    defaultView: 'dayGridMonth',
     events: '/log/load',  // route to fetch events from
     eventContent: function(info) {
       let customHtml = info.event.title; 
@@ -139,7 +140,7 @@ document.addEventListener('DOMContentLoaded', function() {
       info.jsEvent.preventDefault();
       let event = info.event; // the associated Event Object
       selectedWorkoutId = event.id;
-      console.log(`eventClicked: ${event}`);
+      console.log(event);
       console.log(`selectedWorkoutId: ${selectedWorkoutId}`);
       let offcanvasElement = document.getElementById('detail-canvas');
       let offcanvas = new bootstrap.Offcanvas(offcanvasElement);

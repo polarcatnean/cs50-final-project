@@ -6,7 +6,10 @@
   
 {% block main %}
 
-<div id='calendar'></div>
+<!-- Calendar Container -->
+<div id="calendar-container">
+  <div id="calendar"></div>
+</div>
 
 <!-- TODO: add alert after logging etc -->
 <div id='alert'></div>
@@ -38,11 +41,11 @@
 <!-- First modal -->
 <div class="modal fade" id="log-modal" tabindex="-1" aria-labelledby="logModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
+      <div class="modal-content bg-dark text-light">
 
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="logModal">Log Workout</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
         <div class="modal-body">
@@ -98,7 +101,7 @@
             </div>
 
         </div>
-            <div class="modal-footer">
+            <div class="modal-footer border-secondary">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="submit" id="log-exercise-button" disabled class="btn btn-primary" data-bs-target="#exercise-log-modal" data-bs-toggle="modal">Log individual exercise</button>
                 <button type="submit" class="btn btn-success">Workout done!</button>
@@ -115,11 +118,11 @@
 <!-- Second modal (log individual exercise) -->
 <div class="modal custom-modal-padding fade" id="exercise-log-modal" aria-hidden="true" aria-labelledby="exerciseLogModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
+    <div class="modal-content bg-dark text-light">
 
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="exerciseLogModal">Log Exercise</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
       <div class="modal-body">
@@ -164,7 +167,7 @@
           </div>
       </div>
 
-      <div class="modal-footer">
+      <div class="modal-footer border-secondary">
         <button id="log-more" type="submit" class="btn btn-primary">Log more exercise</button>
         <button id="workout-done" type="submit" class="btn btn-success">Workout done!</button>
       </div>
