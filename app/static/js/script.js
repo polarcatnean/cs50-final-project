@@ -104,6 +104,10 @@ document.addEventListener('DOMContentLoaded', function() {
     },
     defaultView: 'dayGridMonth',
     events: '/log/load',  // route to fetch events from
+    eventDidMount: function(info) {
+      let focus = info.event.extendedProps.focus;
+      info.el.classList.add(`focus-${focus}`);
+    },
     eventContent: function(info) {
       let customHtml = info.event.title; 
       let content = document.createElement('div');
@@ -126,6 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
         middleElement.appendChild(progressBar);
     },
     dateClick: function(info) {
+        info.jsEvent.preventDefault();
         // Show the Bootstrap modal when a date is clicked
         info.allDay = false;
         selectedDate = info.dateStr;
@@ -137,7 +142,6 @@ document.addEventListener('DOMContentLoaded', function() {
         logModal.show();
     },
     eventClick: function(info) {
-      info.jsEvent.preventDefault();
       let event = info.event; // the associated Event Object
       selectedWorkoutId = event.id;
       console.log(event);
@@ -157,12 +161,11 @@ document.addEventListener('DOMContentLoaded', function() {
               console.error('Error fetching workout details:', error);
           });
     },
-    selectable: false,
-    unselectAuto: true,
-    
   })
+
   calendar.render();
 
+  
 
   // >> Enable log exercise button based on workout type
   const workoutTypeElement = document.getElementById('workout-type');

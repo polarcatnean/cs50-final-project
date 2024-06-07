@@ -85,12 +85,14 @@ def get_log():
     events = Workout.query.filter_by(user_id=user_id).all()
     event_list = []
     for event in events:
+        body_focus_class = f"focus-{event.body_focus}"
         event_list.append({
             'id': event.id,
             'title': f"<b>{event.duration_min} min</b><br>{event.workout_name}",
             # 'title': f"{event.duration_min} min {event.workout_name}",
             'start': event.date.strftime('%Y-%m-%d'),
             'end': event.date.strftime('%Y-%m-%d'),
+            'classNames': [body_focus_class],
             'extendedProps': {
                 'workoutName': event.workout_name,
                 'duration': event.duration_min,
@@ -100,6 +102,7 @@ def get_log():
             },
             'allDay': True,
         })
+    print(event_list)  # Debug print
     return jsonify(event_list)
 
 

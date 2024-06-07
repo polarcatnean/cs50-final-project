@@ -19,20 +19,13 @@ input {
 
 
 .navbar {
-  background-color: #201e21;
+  background-color: #12181c;
   color: #E0E0E0;
 }
-
-.navbar a {
-  color: #c46a83;
-}
-
-.navbar a:hover {
-  color: #e89bb0;
-}
-
-.navbar .navbar-toggler {
-  background-color: #8a5765;
+.navbar-nav .nav-item + .nav-item {
+  border-left: 1px solid #a4a4a4; /* Adjust the color to fit your theme */
+  padding-left: 10px; /* Adjust the padding as needed */
+  margin-left: 10px; /* Adjust the margin as needed */
 }
 
 
@@ -45,16 +38,15 @@ input {
 
 #calendar {
   flex: 1 1 auto;
-  overflow: hidden; /* Prevent overflow */
+  overflow: hidden; /* Prevent overflow */;
 }
 
 
 /* full calendar custom config */
 
 /* Fixed height for FullCalendar day cells */
-/* Set the height of each day cell. 
-The height is fixed, and the cell is displayed as a flex container to 
-manage the layout of its children. */
+/* Set the height of each day cell. The height is fixed, 
+and the cell is displayed as a flex container to manage the layout of its children. */
 .fc-daygrid-day-frame {
   height: 100px; 
   display: flex;
@@ -80,16 +72,16 @@ manage the layout of its children. */
 
 /* Today's cell background */
 .fc-day-today {
-  background-color: #6b5d73 !important;
+  background-color: #352e39 !important;
 }
 
-/* Event background and text */
+/* Event text */
 .fc-h-event .fc-event-main {
-  color: #3c3535;
+  color: #cfcccc;
 }
 
 .fc-event {
-  background-color: #c9879a !important;
+  background-color: #515268 !important;
   border: none;
   color: #121212 !important;
   line-height: 1.2;
@@ -102,13 +94,62 @@ manage the layout of its children. */
 }
 
 .fc-event:hover {
-  background-color: #8a5765 !important; /* Darker purple for hover effect */
+  background-color: #88cfc8 !important;
+  border-color: #88cfc8 !important;
 }
+
+.fc-event:focus {
+  outline: none; /* Remove the default outline */
+  border-color: #88cfc8 !important; /* Ensure the border color matches the desired color */
+}
+
+/* Define colors for different body focuses with high specificity */
+.focus-full {
+  background-color: #95a1e2 !important; /* Light blue */
+  border-color: #95a1e2 !important;
+  color: #000 !important;
+}
+
+.focus-upper {
+  background-color: #f5b3b0 !important; /* Light pink */
+  border-color: #f5b3b0  !important;
+  color: #000 !important;
+}
+
+.focus-lower {
+  background-color: #d8acc8 !important; /* Peach */
+  border-color: #d8acc8 !important;
+  color: #000 !important;
+}
+
+.focus-core {
+  background-color: #e8b0ae !important; /* Coral pink */
+  border-color: #e8b0ae !important;
+  color: #000 !important;
+}
+
+.focus-cardio {
+  background-color: #a78c80 !important; /* Taupe */
+  border-color: #a78c80 !important;
+  color: #000 !important;
+}
+
+/* Apply the color to the main event element */
+.fc-event.focus-full .fc-event-main,
+.fc-event.focus-upper .fc-event-main,
+.fc-event.focus-lower .fc-event-main,
+.fc-event.focus-core .fc-event-main,
+.fc-event.focus-cardio .fc-event-main {
+  background-color: inherit !important;
+  border-color: inherit !important;
+  color: inherit !important;
+}
+
 
 
 /* Styling for the day names (Sun, Mon, etc.) */
 .fc-col-header-cell-cushion {
-  color: #E0E0E0;
+  color: #bab9b9;
   text-decoration: none; 
   font-weight: bold; 
 }
@@ -117,15 +158,14 @@ manage the layout of its children. */
 }
 
 
-
 /* Calendar header (month, day names) */
 .fc-toolbar-title, .fc-col-header-cell {
-  color: #ddcbcb;
+  color: #f0c0d6;
 }
 
 /* header */
 .fc-toolbar-chunk:nth-child(2) {
-  width: 35vw; 
+  width: 40vw; 
 } 
 .fc-toolbar-chunk:nth-child(3) {
   text-align: center;
@@ -146,15 +186,63 @@ manage the layout of its children. */
   border-width: 0px;
 }
 
+/* Ensure the button colors remain consistent when active */
+.fc .fc-button.fc-button-primary:active, 
+.fc .fc-button.fc-button-primary:focus, 
+.fc .fc-button.fc-button-primary:active:focus {
+  background-color: #c46a83 !important; /* or your desired color */
+  border-color: #c46a83 !important;
+  color: #121212 !important;
+}
+
 /* Styles for the disabled state of the "today" button */
 .fc-toolbar .fc-button:disabled {
-  background-color: #8c63a3; 
+  background-color: #7e638e; 
   border-color: #7d5a91; 
   border-width: 2px;
   color: #E0E0E0; 
   opacity: 0.5; 
 
 }
+
+/*  inner borders  */
+/* .fc .fc-col-header-cell,
+.fc .fc-daygrid-day {
+  border-color: #676767; 
+  border-width: 1px;
+  border-style: solid;
+} */
+
+
+/* Specifically target the outer container to remove any border */
+.fc .fc-scrollgrid,
+.fc .fc-scrollgrid-liquid,
+.fc .fc-view-harness,
+.fc .fc-view,
+.fc .fc {
+    border: none !important;
+    box-shadow: none !important;
+}
+/* Remove any default box shadows or borders that might be applied globally */
+.fc, .fc *, .fc ::after, .fc ::before {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Add bottom borders to rows in the day grid */
+.fc-daygrid-body tr {
+  border-bottom: 1px solid #ddd !important; /* Adjust color as needed */
+}
+/* Ensure the last row does not have a bottom border */
+.fc-daygrid-body tr:last-child {
+  border-bottom: none !important;
+}
+/* Add a border between the day names and date cells */
+.fc .fc-col-header-cell {
+  border-bottom: 1px solid #ddd !important; /* Adjust color as needed */
+}
+
+
 /* Bootstrap button styles */
 .btn {
   text-decoration: none; /* Remove underline */
@@ -195,7 +283,7 @@ manage the layout of its children. */
 
 /* Styles for the inner progress bar */
 .progress-bar {
-    width: 65%; /* set to by dynamic in js */
+    width: 65%; /* set to be dynamic in js */
     background-color: #9d9ad7; /* colour for the progress portion */
     line-height: 20px; /* Match the height of the progress bar for vertical centering */
 
@@ -280,7 +368,6 @@ body.modal-open {
       height: 80px; 
   }
   .fc-daygrid-day-number {
-    color: #E0E0E0;
     font-size: 14px;
     font-weight: normal;
   }
@@ -294,6 +381,16 @@ body.modal-open {
   /* Styling for the day names (Sun, Mon, etc.) */
   .fc-col-header-cell-cushion { 
     font-weight: bold; 
+  }
+  .fc .fc-toolbar-title {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin: 0px;
+  }
+  .fc-toolbar .fc-button, .fc-toolbar .fc-button-primary, .fc-toolbar .fc-button-primary:hover {
+    padding: 5px 5px; /* Reduced padding */
+    font-size: 0.8rem; /* Reduced font size */
+    font-weight: bold;
   }
 
 }
