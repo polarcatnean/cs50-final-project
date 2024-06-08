@@ -1,5 +1,15 @@
 @import url('https://fonts.googleapis.com/css?family=Muli:300,400,600,800,900');
 
+:root {
+  --color-light-yellow: #fbd17d;
+  --color-yellow: #fac660;
+  --color-turquoise: #0eadbe;
+  --color-light-blue: #6288c0;
+  --color-blue: #377ba0;
+  --color-dark-background: #121212; /* dark background color */
+  --color-text: #E0E0E0; /* primary text color */
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -8,16 +18,27 @@ body {
     font-family: Muli, sans-serif;
     font-size: 16px;
     font-weight: 400;
-    overflow-x: hidden;
-    /* line-height: 1.7; */
-  
+    overflow-x: hidden;  
 }
 
 input {
   overflow: hidden;
 }
 
+/* Accent text colors */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--color-light-yellow);
+}
 
+a {
+  color: var(--color-blue);
+}
+
+a:hover {
+  color: var(--color-turquoise);
+}
+
+/* Navigation Bar */
 .navbar {
   background-color: #12181c;
   color: #E0E0E0;
@@ -27,6 +48,15 @@ input {
   padding-left: 10px; /* Adjust the padding as needed */
   margin-left: 10px; /* Adjust the margin as needed */
 }
+
+.navbar a {
+  color: var(--color-text);
+}
+.navbar a:hover {
+  color: var(--color-light-yellow);
+}
+
+
 
 
 /* Ensure the calendar fills the remaining viewport height */
@@ -67,6 +97,10 @@ and the cell is displayed as a flex container to manage the layout of its childr
   color: #E0E0E0;
   font-weight: normal;
   text-decoration: none; /* Remove underline */
+}
+/* Disable hover change */
+.fc-daygrid-day-number:hover {
+  color: #E0E0E0;
 }
 
 
@@ -146,7 +180,6 @@ and the cell is displayed as a flex container to manage the layout of its childr
 }
 
 
-
 /* Styling for the day names (Sun, Mon, etc.) */
 .fc-col-header-cell-cushion {
   color: #bab9b9;
@@ -160,7 +193,7 @@ and the cell is displayed as a flex container to manage the layout of its childr
 
 /* Calendar header (month, day names) */
 .fc-toolbar-title, .fc-col-header-cell {
-  color: #f0c0d6;
+  color: var(--color-text);
 }
 
 /* header */
@@ -249,10 +282,10 @@ and the cell is displayed as a flex container to manage the layout of its childr
 }
 
 .btn-primary {
-  background-color: #6200EA;
-  border-color: #6200EA;
-  color: #FFFFFF;
-  text-decoration: none; /* Remove underline */
+  background-color: var(--color-turquoise);
+  color: var(--color-text);
+  border: none;
+  /* text-decoration: none;  Remove underline */
 }
 
 .btn-primary:hover {
@@ -261,15 +294,21 @@ and the cell is displayed as a flex container to manage the layout of its childr
 }
 
 .btn-secondary {
-  background-color: #03DAC6;
-  border-color: #03DAC6;
-  color: #121212;
-  text-decoration: none; /* Remove underline */
+  background-color: var(--color-light-blue);
+  color: var(--color-text);
+  border: none;
+  /* text-decoration: none;  Remove underline */
 }
 
 .btn-secondary:hover {
   background-color: #029A8A;
   border-color: #029A8A;
+}
+
+.btn-danger {
+  background-color: var(--color-yellow);
+  color: var(--color-text);
+  border: none;
 }
 
 
@@ -291,11 +330,14 @@ and the cell is displayed as a flex container to manage the layout of its childr
 
 
 
-/* modal */
+/* Modal */
+.modal {
+  background-color: var(--color-dark-background);
+  color: var(--color-text);
+}
 body.modal-open {
   padding-right: 0 !important;
 }
-
 .modal-body {
   text-align: left;
 }
