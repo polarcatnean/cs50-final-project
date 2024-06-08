@@ -19,3 +19,13 @@ def index():
 @main.route('/dist/<path:filename>')
 def dist(filename):
     return send_from_directory(os.path.join(os.getcwd(), 'dist'), filename)
+
+
+@main.route("/log")
+def log_page():
+    return redirect("/")
+
+
+@main.route("/timer")
+def timer_page():
+    return render_template("timer.html")

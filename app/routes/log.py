@@ -54,14 +54,27 @@ def add_exercise():
 def delete_workout(workout_id):
     user_id = session.get("user_id")
     workout = Workout.query.filter_by(id=workout_id, user_id=user_id).first()
+    exercises = WorkoutExercise.query.filter_by(workout_id=workout_id, user_id=user_id).all()
     
     if not workout:
         return jsonify({"error": "Workout not found"}), 404
-
-    db.session.delete(workout)
-    db.session.commit()
     
-    return jsonify({"message": "Workout deleted successfully"}), 200
+    db.session.delete(workout)
+    
+    exercises_deleted = False
+    if exercises:
+        exercises_deleted = True
+        for exercise in exercises:
+            db.session.delete(exercise)
+        
+    db.session.commit()
+
+    if exercises_deleted:
+        message = "Workout and associated exercises deleted successfully"
+    else:
+        message = "Workout deleted successfully, no associated exercises found"
+    
+    return jsonify({"message": message}), 200
 
 
 # TODO edit route 
@@ -81,7 +94,7 @@ def edit_workout(workout_id):
 @login_required
 def get_log():
     user_id = session.get("user_id")
-    # only get log from this user_id
+
     events = Workout.query.filter_by(user_id=user_id).all()
     event_list = []
     for event in events:
@@ -101,7 +114,7 @@ def get_log():
             },
             'allDay': True,
         })
-    print(event_list)  # Debug print
+
     return jsonify(event_list)
 
 
