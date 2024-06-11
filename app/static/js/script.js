@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
     defaultView: 'dayGridMonth',
     events: '/log/load',  // route to fetch events from
     eventDidMount: function(info) {
-      
+
     },
     eventContent: function(info) {
       let customHtml = info.event.title; 
@@ -236,7 +236,15 @@ document.getElementById('log-form').addEventListener('submit', function(event) {
       // Add workout event to calendar
       // TODO: validate input
       if (formData["date"] && formData["duration_min"] && formData["workout_name"]) {
-        let bodyFocusClass = `focus-${formData["body_focus"]}`;
+
+        let bodyFocusClass = "";
+        if (formData["workout_type"] == "cardio") {
+          bodyFocusClass = "focus-cardio";
+        }
+        else {
+          bodyFocusClass = `focus-${formData["body_focus"]}`;
+        }
+
         calendar.addEvent({
             id: loggingWorkoutId, // Include the new workout ID in the event object
             title: `<b>${formData["duration_min"]} min</b><br>${formData["workout_name"]}`, // Use HTML directly in the title

@@ -26,9 +26,9 @@ input {
 }
 
 /* Accent text colors */
-h1, h2, h3, h4, h5, h6 {
-  color: var(--color-light-yellow);
-}
+/* h1, h2, h3, h4, h5, h6 {
+  color: var(--color-blue);
+} */
 
 a {
   color: var(--color-blue);
@@ -132,10 +132,12 @@ and the cell is displayed as a flex container to manage the layout of its childr
   border-color: #88cfc8 !important;
 }
 
-.fc-event:focus {
-  outline: none; /* Remove the default outline */
-  border-color: #88cfc8 !important; /* Ensure the border color matches the desired color */
+.fc .fc-event:focus, .fc .fc-event:active {
+  outline: none !important; /* Remove the default outline */
+  box-shadow: none !important; /* Remove the box shadow */
 }
+
+
 
 /* Define colors for different body focuses with high specificity */
 .focus-full {
@@ -163,8 +165,8 @@ and the cell is displayed as a flex container to manage the layout of its childr
 }
 
 .focus-cardio {
-  background-color: #a78c80 !important; /* Taupe */
-  border-color: #a78c80 !important;
+  background-color: #ffcf70 !important; /* Yellow */
+  border-color: #ffcf70 !important;
   color: #000 !important;
 }
 
@@ -187,6 +189,7 @@ and the cell is displayed as a flex container to manage the layout of its childr
   font-weight: bold; 
 }
 .fc-col-header-cell-cushion:hover {
+  color: #bab9b9;
   text-decoration: none; /* Ensure no underline on hover */
 }
 
@@ -331,10 +334,10 @@ and the cell is displayed as a flex container to manage the layout of its childr
 
 
 /* Modal */
-.modal {
+/* .modal {
   background-color: var(--color-dark-background);
   color: var(--color-text);
-}
+} */
 body.modal-open {
   padding-right: 0 !important;
 }

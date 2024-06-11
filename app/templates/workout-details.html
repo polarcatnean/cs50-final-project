@@ -2,7 +2,7 @@
     <strong>{{ event.date.strftime("%d").lstrip('0') }} {{ event.date.strftime("%B %Y") }}</strong><br>
     {{ event.workout_name | capitalise }}<br>
     {{ event.duration_min }} min {{ event.workout_type | capitalise }}<br>
-    {{ event.body_focus | capitalise }} Body<br>
+    Body focus : {{ event.body_focus | capitalise }} Body<br>
     {% if event.calories_burned %}
         {{ event.calories_burned }} cal<br>
     {% endif %}
@@ -35,7 +35,7 @@
     </table>
     <div class="mb-3">
         <p>
-            <strong>Muscle groups worked:</strong>
+            <strong>Muscle groups :</strong>
             <br>
             {% if muscle_groups %}
                 {{ muscle_groups | join(', ') }}
@@ -44,7 +44,7 @@
             {% endif %}
         </p>
         <p>
-            <strong>Secondary muscle groups worked:</strong>
+            <strong>Secondary muscle groups :</strong>
             <br>
             {% if secondary_muscle_groups %}
                 {{ secondary_muscle_groups | join(', ') }}
