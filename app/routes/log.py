@@ -77,17 +77,50 @@ def delete_workout(workout_id):
     return jsonify({"message": message}), 200
 
 
-# TODO edit route 
-@log.route("/edit/<int:workout_id>", methods=["POST"])
+@log.route("/edit/<int:workout_id>", methods=["PUT"])
 @login_required
 def edit_workout(workout_id):
     user_id = session.get("user_id")
+    data = request.get_json()
+
     workout = Workout.query.filter_by(id=workout_id, user_id=user_id).first()
     
     if not workout:
         return jsonify({"error": "Workout not found"}), 404
+
+    # Update workout details
+    workout.date = datetime.strptime(data['date'], '%Y-%m-%d').date()
+    workout.workout_name = data['workout_name']
+    workout.workout_type = data['workout_type']
+    workout.body_focus = data['body_focus']
+    workout.duration_min = data['duration_min']
+    workout.calories_burned = data.get('calories_burned')
     
-    return jsonify({"message": "Workout edited successfully"}), 200
+    db.session.commit()
+    
+    return jsonify({"message": "Workout updated successfully", "id": workout.id})
+
+
+@log.route('/edit_workout/<int:workout_id>', methods=["GET"])
+@login_required
+def get_exercise_details(workout_id):
+    user_id = session.get("user_id")
+    workout = Workout.query.filter_by(id=workout_id, user_id=user_id).first()
+
+    if not workout:
+        return jsonify({"error": "Exercise not found"}), 404
+
+    workout_data = {
+        "id": workout.id,
+        "date": workout.date,
+        "workout_name": workout.workout_name,
+        "workout_type": workout.workout_type,
+        "body_focus": workout.body_focus,
+        "duration_min": workout.duration_min,
+        "calories_burned": workout.calories_burned
+    }
+
+    return jsonify(workout_data)
 
 
 @log.route('/load', methods=["GET"])
@@ -98,7 +131,10 @@ def get_log():
     events = Workout.query.filter_by(user_id=user_id).all()
     event_list = []
     for event in events:
-        body_focus_class = f"focus-{event.body_focus}"
+        if event.workout_type == "cardio":
+            body_focus_class = "focus-cardio"
+        else: 
+            body_focus_class = f"focus-{event.body_focus}"
         event_list.append({
             'id': event.id,
             'title': f"<b>{event.duration_min} min</b><br>{event.workout_name}",
@@ -149,3 +185,25 @@ def get_workout_details(event_id):
     secondary_muscle_groups = sorted(secondary_muscle_groups)
 
     return render_template('workout-details.html', event=event, exercises=exercises, muscle_groups=muscle_groups, secondary_muscle_groups=secondary_muscle_groups)
+
+
+
+
+@log.route('/edit_exercise/<int:exercise_id>', methods=["PUT"])
+@login_required
+def edit_exercise(exercise_id):
+    user_id = session.get("user_id")
+    exercise = WorkoutExercise.query.filter_by(id=exercise_id, user_id=user_id).first()
+
+    if not exercise:
+        return jsonify({"error": "Exercise not found"}), 404
+
+    data = request.get_json()
+    exercise.exercise_id = data['exercise_id']
+    exercise.sets = data['sets']
+    exercise.reps = data['reps']
+    exercise.weight_kg = data['weight']
+
+    db.session.commit()
+
+    return jsonify({"message": "Exercise updated successfully"})

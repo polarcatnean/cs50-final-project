@@ -38,22 +38,22 @@
 
 
 <!-- Modal -->
-<!-- First modal -->
-<div class="modal fade" id="log-modal" tabindex="-1" aria-labelledby="logModal" aria-hidden="true">
+<!-- First Modal for Logging or Editing Workout -->
+<div class="modal fade" id="log-edit-modal" tabindex="-1" aria-labelledby="logEditModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
 
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="logModal">Log Workout</h1>
+          <h1 class="modal-title fs-5" id="logEditModal">Log Workout</h1>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
         <div class="modal-body">
-          <form id="log-form">
+          <form id="log-edit-form">
 
             <div class="form-floating mb-3">
               <input type="date" class="form-control" id="date" required>
-              <label for="Date" class="col-form-label">Date</label>
+              <label for="date" class="col-form-label">Date</label>
             </div>
 
             <div class="row g-2">
@@ -104,7 +104,7 @@
             <div class="modal-footer border-secondary">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 <button type="submit" id="log-exercise-button" disabled class="btn btn-primary" data-bs-target="#exercise-log-modal" data-bs-toggle="modal">Log individual exercise</button>
-                <button type="submit" class="btn btn-success">Workout done!</button>
+                <button type="submit" id="save-button" class="btn btn-success">Log Workout</button>
 
             </div>
         </div>
@@ -128,7 +128,7 @@
       <div class="modal-body">
         <form id="exercise-log-form">
 
-          <div class="form-floating mb-3" data-bs-theme=dark>
+          <div class="form-floating mb-3">
             <select class="form-select" id="body-focus-2" aria-label="body focus select">
             <option value="full">Full body</option>
             <option value="lower">Lower body</option>

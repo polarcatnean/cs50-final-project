@@ -137,7 +137,11 @@ document.addEventListener('DOMContentLoaded', function() {
         clickedDayElement = info.dayEl;
         console.log(`${selectedDate} is clicked at ${time}`);
         document.getElementById("date").value = formatDate(selectedDate);
-        let logModal = new bootstrap.Modal(document.getElementById('log-modal'), { focus: true });
+        document.getElementById('logEditModal').textContent = 'Log Workout';
+        document.getElementById('save-button').textContent = 'Log Workout';
+        document.getElementById('log-exercise-button').textContent = 'Log individual exercise';
+        document.getElementById('log-edit-form').dataset.action = 'log';
+        let logModal = new bootstrap.Modal(document.getElementById('log-edit-modal'), { focus: true });
         logModal.show();
     },
     eventClick: function(info) {
@@ -193,6 +197,30 @@ document.addEventListener('DOMContentLoaded', function() {
   // TODO: Edit workout button
   const editWorkoutButton = document.getElementById('edit-workout');
   editWorkoutButton.addEventListener('click', function() {
+    fetch(`/log/edit_workout/${selectedWorkoutId}`)
+    .then(response => response.json())
+    .then(data => {
+        // Populate the form with existing workout data
+        document.getElementById('date').value = formatDate(data.date);
+        document.getElementById('duration-min').value = data.duration_min;
+        document.getElementById('calories-burned').value = data.calories_burned || '';
+        document.getElementById('workout-name').value = data.workout_name;
+        document.getElementById('workout-type').value = data.workout_type;
+        document.getElementById('body-focus-1').value = data.body_focus;
+
+        // Set the modal title and button
+        document.getElementById('logEditModal').textContent = 'Edit Workout';
+        document.getElementById('log-exercise-button').textContent = 'Edit exercises';
+        document.getElementById('save-button').textContent = 'Save changes';
+
+        // Set an identifier for the form action
+        document.getElementById('log-edit-form').dataset.action = 'edit';
+        document.getElementById('log-edit-form').dataset.workoutId = selectedWorkoutId;
+        new bootstrap.Modal(document.getElementById('log-edit-modal')).show();
+    })
+    .catch(error => {
+        console.error('Error fetching workout details:', error);
+    });
   });
 
 // DOMContentLoaded closed
@@ -201,8 +229,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Handle form submission in the modal
 // Workout submission
-document.getElementById('log-form').addEventListener('submit', function(event) {
+document.getElementById('save-button').addEventListener('click', function(event) {
   event.preventDefault(); // Prevent the default form submission behavior
+
+  const action = document.getElementById('log-edit-form').dataset.action;
+  const workoutId = document.getElementById('log-edit-form').dataset.workoutId;
+  const url = action === 'log' ? '/log/add' : `/log/edit/${workoutId}`;
+  const method = action === 'log' ? 'POST' : 'PUT';
 
   // Collect form data
   let formData = {
@@ -217,8 +250,8 @@ document.getElementById('log-form').addEventListener('submit', function(event) {
   console.log(formData);
 
   // Use fetch to send the form data
-  fetch('/log/add', {
-    method: 'POST', 
+  fetch(url, {
+    method: method, 
     headers: {
         'Content-Type': 'application/json', // Set the request headers
     },
@@ -244,8 +277,8 @@ document.getElementById('log-form').addEventListener('submit', function(event) {
         else {
           bodyFocusClass = `focus-${formData["body_focus"]}`;
         }
-
-        calendar.addEvent({
+        if (action === 'log') {
+          calendar.addEvent({
             id: loggingWorkoutId, // Include the new workout ID in the event object
             title: `<b>${formData["duration_min"]} min</b><br>${formData["workout_name"]}`, // Use HTML directly in the title
             start: formData["date"], // Use formData["date"] for the start date
@@ -255,23 +288,20 @@ document.getElementById('log-form').addEventListener('submit', function(event) {
               duration: formData["duration_min"],
               workoutName: formData["workout_name"]
             },
-        });
+          });
+        }
       }
-      document.getElementById('log-form').reset();
+      document.getElementById('log-edit-form').reset();
   })
   .catch(error => {
       console.error('Error:', error);
   });
 
   // Close the modal
-  let modalElement = document.getElementById('log-modal');
+  let modalElement = document.getElementById('log-edit-modal');
   let modalInstance = bootstrap.Modal.getInstance(modalElement);
   modalInstance.hide();
 
-  // Change the background color of the clicked date
-  if (clickedDayElement) {
-    clickedDayElement.style.backgroundColor = "rgba(188,232,241,.3)";
-  }
 // Workout submission closed
 });
 
