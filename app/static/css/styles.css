@@ -8,6 +8,18 @@
   --color-blue: #377ba0;
   --color-dark-background: #121212; /* dark background color */
   --color-text: #E0E0E0; /* primary text color */
+  
+  --color-light-orange: #ffae57;
+  --color-orange: #ff8853;
+  --color-red: #ff4e59;
+  --color-dark-blue: #003661;
+  --color-darkest-blue: #001c34;
+
+  --color-pale-yellow: #ffd894;
+  --color-peach: #fcb87c;
+  --color-bright-orange: #ffb461;
+  --color-light-pink: #f9a89e;
+  --color-muted-pink: #e39c94;
 }
 
 body {
