@@ -1,25 +1,57 @@
 @import url('https://fonts.googleapis.com/css?family=Muli:300,400,600,800,900');
 
 :root {
+  --color-dark-background: #121212; /* dark background color */
+  --color-text: #E0E0E0; /* primary text color */
+
+  /* Antartic Sun */
   --color-light-yellow: #fbd17d;
   --color-yellow: #fac660;
   --color-turquoise: #0eadbe;
   --color-light-blue: #6288c0;
   --color-blue: #377ba0;
-  --color-dark-background: #121212; /* dark background color */
-  --color-text: #E0E0E0; /* primary text color */
-  
+
+  /* Tireless Traveler */
   --color-light-orange: #ffae57;
   --color-orange: #ff8853;
   --color-red: #ff4e59;
   --color-dark-blue: #003661;
   --color-darkest-blue: #001c34;
 
+  /* Honey Hearts */
   --color-pale-yellow: #ffd894;
   --color-peach: #fcb87c;
   --color-bright-orange: #ffb461;
   --color-light-pink: #f9a89e;
   --color-muted-pink: #e39c94;
+
+  /* Candy Dreams */
+  --color-soft-pink: #f5b3b0;
+  --color-lavender: #d8acc8;
+  --color-periwinkle: #95a1e2;
+  --color-light-teal: #82c6da;
+  --color-mint: #88cfc8;
+  
+  /* Water Park */
+  --color-pale-yellow-bright: #ffdf7e;
+  --color-cyan: #5ce2f1;
+  --color-sky-blue: #63bff1;
+  --color-light-periwinkle: #8e9df4;
+  --color-medium-purple: #827bc9;
+
+  /* Aquamarina */
+  --color-light-cyan: #97e5ef;
+  --color-aqua: #68d5e4;
+  --color-bright-teal: #30b8ca;
+  --color-deep-teal: #20a5b7;
+  --color-dark-teal: #0e8a9b;
+
+  /* Vintage Vineyards */
+  --color-light-grey: #e2d6d6;
+  --color-grey: #d5bec0;
+  --color-muted-rose: #deafb1;
+  --color-brown-grey: #997c7d;
+  --color-dark-brown: #524040;
 }
 
 body {
@@ -297,28 +329,32 @@ and the cell is displayed as a flex container to manage the layout of its childr
 }
 
 .btn-primary {
-  background-color: var(--color-turquoise);
+  background-color: var(--color-blue);
   color: var(--color-text);
   border: none;
   /* text-decoration: none;  Remove underline */
 }
 
 .btn-primary:hover {
-  background-color: #4B00B3;
-  border-color: #4B00B3;
+  background-color: #306a88;
+  border-color: #306a88;
 }
 
 .btn-secondary {
-  background-color: var(--color-light-blue);
+  background-color: var(--color-dark-brown);
   color: var(--color-text);
   border: none;
   /* text-decoration: none;  Remove underline */
 }
 
 .btn-secondary:hover {
-  background-color: #029A8A;
-  border-color: #029A8A;
+  background-color: #433535;
+  border-color: #433535;
 }
+
+/* .btn-tertiary {
+  
+} */
 
 .btn-danger {
   background-color: var(--color-yellow);
