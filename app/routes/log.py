@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, render_template, redirect, url_for, request, session
+from sqlalchemy import func
 from app.models import db, Exercise, Workout, WorkoutExercise
 from datetime import datetime
 from app.helpers import login_required
@@ -113,7 +114,7 @@ def edit_workout(workout_id):
 def get_workout_data(workout_id):
     user_id = session.get("user_id")
     workout = Workout.query.filter_by(id=workout_id, user_id=user_id).first()
-    has_exercises = db.session.query(WorkoutExercise.query.filter_by(workout_id=workout_id, user_id=user_id).exists()).scalar()
+    has_exercises = db.session.query(func.count(WorkoutExercise.id)).filter_by(workout_id=workout_id, user_id=user_id).scalar()
 
     if not workout:
         return jsonify({"error": "Workout not found"}), 404

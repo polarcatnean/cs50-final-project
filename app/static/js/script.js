@@ -81,7 +81,7 @@ function setMode(mode, type) {
   else {
     console.log("Error: type or mode not set correctly");
   }
-  console.log(`setMode to ${mode} ${type}`);
+  console.log(`setMode to ${mode} for ${type}`);
 }
 
 function updateWorkoutUI() {
@@ -315,7 +315,6 @@ document.addEventListener('DOMContentLoaded', function() {
   calendar.render();
   // END of calendar config //
 
-
 }); // END of DOMContentLoaded
 
 
@@ -327,6 +326,8 @@ async function handleFormSubmit(event) {
 
   if (formId === 'workout-form') {
     await submitWorkoutForm(workoutMode);
+    workoutModalInstance.hide();
+
     if (clickedButton.id === 'log-exercise-button') {
       // TODO 
       if (workoutMode == LOG_MODE) {
@@ -335,36 +336,40 @@ async function handleFormSubmit(event) {
       else if (workoutMode === EDIT_MODE) {
         // account for when workout has no exercises, the fetch will return 404 not found
         try {
-          const response = await fetch(`/log/fill_exercise_data/${selectedWorkoutId}`);
-          const data = await response.json();
-          exercisesData = data;
-          currentExerciseIndex = 0;
-
-          if (exercisesData.length > 0) {
-            populateExerciseForm();
+          const workoutResponse = await fetch(`/log/fill_workout_data/${selectedWorkoutId}`);
+          const workoutData = await workoutResponse.json();
+        
+          if (workoutData.has_exercises > 0) {
+            try {
+              const exerciseResponse = await fetch(`/log/fill_exercise_data/${selectedWorkoutId}`);
+              const data = await exerciseResponse.json();
+              exercisesData = data;
+              currentExerciseIndex = 0;
+    
+              if (exercisesData.length > 0) {
+                populateExerciseForm();
+              }
+    
+            } catch (error) {
+              console.error('Error fetching exercise data:', error);
+            }
           }
-
+          if (workoutData.has_exercises == 1) {
+            logMoreButton.textContent = 'Save changes & add new exercise';
+          }
         } catch (error) {
-          console.error('Error fetching exercise data:', error);
-        }
-        // fetch(`/log/fill_exercise_data/${selectedWorkoutId}`)
-        // .then(response => response.json())
-        // .then(data => {
-        //     exercisesData = data;
-        //     currentExerciseIndex = 0;
-
-        //     if (exercisesData.length > 0) {
-        //       populateExerciseForm();
-        //     }
-        // })
-        // .catch(error => {
-        //     console.error('Error fetching exercise data:', error);
-        // });
+            console.error('Error fetching workout data:', error);
+        };
       }
     } 
+
     else if (clickedButton.id === 'save-button') {
       // TODO handle Save button click
-      workoutModalInstance.hide();
+
+      // Close the workout-detail offcanvas
+      const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
+      offcanvasInstance.hide();
+      
       resetVariables();
     }
   } 
@@ -375,7 +380,7 @@ async function handleFormSubmit(event) {
       submitExerciseForm(exerciseMode)
         .then(() => {
           // After the form submission is handled, close and reopen the modal to show movement
-          exerciseModalInstance.hide(); 
+          exerciseModalInstance.hide();
           setTimeout(() => {
             if (exerciseMode === LOG_MODE) {
               setMode(LOG_MODE, EXERCISE_TYPE);
@@ -384,6 +389,7 @@ async function handleFormSubmit(event) {
             else if (exerciseMode === EDIT_MODE) {
               if (currentExerciseIndex == exercisesData.length) {
                 setMode(LOG_MODE, EXERCISE_TYPE);
+                exerciseForm.reset();
               }
             }
             exerciseModalInstance.show();
@@ -396,15 +402,38 @@ async function handleFormSubmit(event) {
     else if (clickedButton.id === 'workout-done') {
       submitExerciseForm(exerciseMode)
         .then(() => {
+          exerciseForm.reset();
+          exerciseModalInstance.hide();
+
+          // TODO
           if (exerciseMode === LOG_MODE) {
-            exerciseForm.reset();
-            exerciseModalInstance.hide();
-            resetVariables();
+            
           }
           else if (exerciseMode === EDIT_MODE) {
-
+          
           }
 
+          // Fetch the new workout details // should use try catch??
+          fetch(`/log/details/${selectedWorkoutId}`)
+          .then(response => response.text())
+          .then(html => {
+              let workoutDetailsEl = document.getElementById('workout-details');
+              workoutDetailsEl.innerHTML = html; // Insert the HTML content
+          })
+          .catch(error => {
+              console.error('Error fetching workout details:', error);
+          });
+
+          // Hide and then show the offcanvas with updated details
+          const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
+          offcanvasInstance.hide();
+
+          setTimeout(() => {
+            offcanvasInstance.show();
+          }, 200); // Delay to ensure the offcanvas is hidden before showing it again
+        })
+        .then(() => {
+          resetVariables();
         })
         .catch(error => {
           console.error('Error during form submission:', error);
@@ -482,13 +511,7 @@ function submitWorkoutForm(workoutMode) {
               event.setProp('classNames', [bodyFocusClass]);
               console.log("Event updated on calendar");
             }
-
-            // Close the workout-detail offcanvas
-            const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
-            offcanvasInstance.hide();
-
           }
-            
 
         selectedBodyFocus = document.getElementById('body-focus-1').value; // to use later in exercise modal
         workoutForm.reset();
@@ -543,6 +566,10 @@ function submitExerciseForm(exerciseMode) {
         if (exerciseMode === EDIT_MODE) {
           currentExerciseIndex++;
           populateExerciseForm();
+          
+          console.log(`currentExerciseIndex=${currentExerciseIndex}`);
+          console.log(`exercisesData.length=${exercisesData.length}`);
+
           // At last exercise to edit
           if (currentExerciseIndex == exercisesData.length - 1) {
             logMoreButton.textContent = 'Save changes & add new exercise';
@@ -575,11 +602,12 @@ function handleEditBtnClick() {
         document.getElementById('workout-type').value = data.workout_type;
         document.getElementById('body-focus-1').value = data.body_focus;
 
-        if (!data.has_exercises) {
+        if (data.has_exercises == 0) {
+          console.log("Workout has no recorded exercises, changing mode for exercise")
           setMode(LOG_MODE, EXERCISE_TYPE)
           logExerciseButton.textContent = "Add exercise";
           selectedBodyFocus = document.getElementById('body-focus-1').value;
-        } 
+        }
 
         workoutModalInstance.show();
     })
