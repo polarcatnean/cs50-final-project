@@ -116,7 +116,7 @@ a:hover {
 }
 
 
-/* full calendar custom config */
+/* fullCalendar config */
 
 /* Fixed height for FullCalendar day cells */
 /* Set the height of each day cell. The height is fixed, 
@@ -159,7 +159,7 @@ and the cell is displayed as a flex container to manage the layout of its childr
 }
 
 .fc-event {
-  background-color: #515268 !important;
+  /* background-color: #515268 !important; */
   border: none;
   color: #121212 !important;
   line-height: 1.2;
@@ -285,14 +285,6 @@ and the cell is displayed as a flex container to manage the layout of its childr
 
 }
 
-/*  inner borders  */
-/* .fc .fc-col-header-cell,
-.fc .fc-daygrid-day {
-  border-color: #676767; 
-  border-width: 1px;
-  border-style: solid;
-} */
-
 
 /* Specifically target the outer container to remove any border */
 .fc .fc-scrollgrid,
@@ -323,7 +315,7 @@ and the cell is displayed as a flex container to manage the layout of its childr
 }
 
 
-/* Bootstrap button styles */
+/* Buttons */
 .btn {
   text-decoration: none; /* Remove underline */
 }
@@ -340,14 +332,14 @@ and the cell is displayed as a flex container to manage the layout of its childr
   border-color: #306a88;
 }
 
-.btn-secondary {
+.btn-secondary-2 {
   background-color: var(--color-dark-brown);
   color: var(--color-text);
   border: none;
   /* text-decoration: none;  Remove underline */
 }
 
-.btn-secondary:hover {
+.btn-secondary-2:hover {
   background-color: #433535;
   border-color: #433535;
 }
@@ -427,7 +419,7 @@ body.modal-open {
 /* Reduced padding for medium viewports */
 @media (max-width: 991.98px) {
   .container {
-      padding-top: 3rem; /* Adjust this value as needed */
+      padding-top: 3rem; 
       padding-bottom: 3rem; 
       padding-left: 2rem; 
       padding-right: 2rem;
@@ -437,7 +429,7 @@ body.modal-open {
 /* Reduced padding for small viewports */
 @media (max-width: 767.98px) {
   .container {
-      padding-top: 2rem; /* Adjust this value as needed */
+      padding-top: 2rem;
       padding-bottom: 2rem; 
       padding-left: 1rem; 
       padding-right: 1rem;
@@ -447,7 +439,7 @@ body.modal-open {
 
 
 /* Media query for smaller viewports  */
-@media (max-width: 992px) {
+@media (max-width: 991.98px) {
   #calendar-container {
       height: 110vh; 
   }

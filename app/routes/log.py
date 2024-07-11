@@ -12,6 +12,11 @@ def add_workout():
     user_id = session.get("user_id")
     data = request.get_json()
 
+    required_fields = ['date', 'workout_name', 'workout_type', 'body_focus', 'duration_min']
+    for field in required_fields:
+        if field not in data or data[field] == "":
+            return jsonify({'error': f'Missing required field: {field}'}), 400
+            
     new_workout = Workout(
         user_id=user_id,
         date=datetime.strptime(data['date'], '%Y-%m-%d').date(),
@@ -19,7 +24,7 @@ def add_workout():
         workout_type=data['workout_type'],
         body_focus=data['body_focus'],
         duration_min=data['duration_min'],
-        calories_burned=data.get('calories_burned') # because this is optional, returns None if empty, prevents "KeyError"
+        calories_burned=data.get('calories_burned') # Optional field, returns None if empty, prevents "KeyError"
     )
 
     db.session.add(new_workout)
@@ -62,22 +67,24 @@ def delete_workout(workout_id):
     db.session.delete(workout)
     
     exercises_deleted = False
+    exercise_ids = []
     if exercises:
         exercises_deleted = True
         for exercise in exercises:
+            exercise_ids.append(exercise.exercise_id)
             db.session.delete(exercise)
         
     db.session.commit()
 
     if exercises_deleted:
-        message = "Workout and associated exercises deleted successfully"
+        message = f"Workout and associated exercise ids [{exercise_ids}] deleted successfully"
     else:
         message = "Workout deleted successfully, no associated exercises found"
     
     return jsonify({"message": message}), 200
 
 
-@log.route("/edit/<int:workout_id>", methods=["PUT"])
+@log.route("/edit_workout/<int:workout_id>", methods=["PUT"])
 @login_required
 def edit_workout(workout_id):
     user_id = session.get("user_id")
@@ -101,14 +108,15 @@ def edit_workout(workout_id):
     return jsonify({"message": "Workout updated successfully", "id": workout.id})
 
 
-@log.route('/edit_workout/<int:workout_id>', methods=["GET"])
+@log.route('/fill_workout_data/<int:workout_id>', methods=["GET"])
 @login_required
-def get_exercise_details(workout_id):
+def get_workout_data(workout_id):
     user_id = session.get("user_id")
     workout = Workout.query.filter_by(id=workout_id, user_id=user_id).first()
+    has_exercises = db.session.query(WorkoutExercise.query.filter_by(workout_id=workout_id, user_id=user_id).exists()).scalar()
 
     if not workout:
-        return jsonify({"error": "Exercise not found"}), 404
+        return jsonify({"error": "Workout not found"}), 404
 
     workout_data = {
         "id": workout.id,
@@ -117,10 +125,55 @@ def get_exercise_details(workout_id):
         "workout_type": workout.workout_type,
         "body_focus": workout.body_focus,
         "duration_min": workout.duration_min,
-        "calories_burned": workout.calories_burned
+        "calories_burned": workout.calories_burned,
+        "has_exercises": has_exercises
     }
 
     return jsonify(workout_data)
+
+
+@log.route('/edit_exercise/<int:workoutExercise_id>', methods=["PUT"])
+@login_required
+def edit_exercise(workoutExercise_id):
+    user_id = session.get("user_id")
+    exercise = WorkoutExercise.query.filter_by(id=workoutExercise_id, user_id=user_id).first()
+
+    if not exercise:
+        return jsonify({"error": "Exercise not found"}), 404
+
+    data = request.get_json()
+    exercise.exercise_id = data['exercise_id']
+    exercise.sets = data['sets']
+    exercise.reps = data['reps']
+    exercise.weight_kg = data['weight']
+
+    db.session.commit()
+
+    return jsonify({"message": "Exercise updated successfully"})
+
+
+@log.route('/fill_exercise_data/<int:workout_id>', methods=["GET"])
+@login_required
+def get_exercise_data(workout_id):
+    user_id = session.get("user_id")
+    exercises = WorkoutExercise.query.filter_by(workout_id=workout_id, user_id=user_id).all()
+
+    if not exercises:
+        return jsonify({"error": "Workout has no associated exercises"}), 404
+
+    exercises_data = []
+    for exercise in exercises:
+        exercise_data = {
+            # "index": index,
+            "id": exercise.id,
+            "exercise_id": exercise.exercise_id,
+            "sets": exercise.sets,
+            "reps": exercise.reps,
+            "weight": exercise.weight_kg
+        }
+        exercises_data.append(exercise_data)
+
+    return jsonify(exercises_data)
 
 
 @log.route('/load', methods=["GET"])
@@ -166,12 +219,11 @@ def load_exercises():
 @login_required
 def get_workout_details(event_id):
     user_id = session.get("user_id")
-    # Replace this with your actual database query
     event = Workout.query.filter_by(user_id=user_id, id=event_id).first()
     exercises = WorkoutExercise.query.filter_by(user_id=user_id, workout_id=event_id).all()
 
     if event is None:
-        return "Event not found", 404
+        return "Workout not found", 404
     
     muscle_groups = set()
     secondary_muscle_groups = set()
@@ -186,24 +238,3 @@ def get_workout_details(event_id):
 
     return render_template('workout-details.html', event=event, exercises=exercises, muscle_groups=muscle_groups, secondary_muscle_groups=secondary_muscle_groups)
 
-
-
-
-@log.route('/edit_exercise/<int:exercise_id>', methods=["PUT"])
-@login_required
-def edit_exercise(exercise_id):
-    user_id = session.get("user_id")
-    exercise = WorkoutExercise.query.filter_by(id=exercise_id, user_id=user_id).first()
-
-    if not exercise:
-        return jsonify({"error": "Exercise not found"}), 404
-
-    data = request.get_json()
-    exercise.exercise_id = data['exercise_id']
-    exercise.sets = data['sets']
-    exercise.reps = data['reps']
-    exercise.weight_kg = data['weight']
-
-    db.session.commit()
-
-    return jsonify({"message": "Exercise updated successfully"})

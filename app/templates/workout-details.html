@@ -28,7 +28,11 @@
                 <td>{{ exercise_details.name | default('Exercise not found') |  capitalise }}</td>
                 <td>{{ exercise.sets }}</td>
                 <td>{{ exercise.reps }}</td>
-                <td>{{ exercise.weight_kg }} kg</td>
+                {% if exercise.weight_kg == 0 %}
+                    <td>bodyweight</td>
+                {% else %}
+                    <td>{{ exercise.weight_kg }} kg</td>
+                {% endif %}
             </tr>
         {% endfor %}
         </tbody>

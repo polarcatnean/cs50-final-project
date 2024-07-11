@@ -11,8 +11,8 @@ main = Blueprint('main', __name__)
 @login_required
 def index():
     user = db.session.scalars(db.select(User).filter_by(id=session["user_id"])).first()
-    if user is None:
-        return redirect("auth/login")
+    # if user is None:
+    #     return redirect("auth/login")
     return render_template("index.html", username=user.username)
 
 

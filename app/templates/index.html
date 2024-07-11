@@ -29,7 +29,7 @@
 
   <div class="offcanvas-footer">
     <div class="">
-      <button class="btn btn-secondary me-2" type="button" id="edit-workout">Edit</button>
+      <button class="btn btn-secondary-2 me-2" type="button" id="edit-workout">Edit</button>
       <button class="btn btn-outline-danger" type="button" id="delete-workout">Delete Workout</button>
     </div>
   </div>
@@ -37,19 +37,19 @@
 </div>
 
 
-<!-- Modal -->
-<!-- First Modal for Logging or Editing Workout -->
-<div class="modal fade" id="log-edit-modal" tabindex="-1" aria-labelledby="logEditModal" aria-hidden="true">
+<!-- Log Modal -->
+<!-- First Modal -->
+<div class="modal fade" id="workout-modal" tabindex="-1" aria-labelledby="logEditModal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
 
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="logEditModal">Log Workout</h1>
+          <h1 class="modal-title fs-5" id="workout-header">Log Workout</h1>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
         <div class="modal-body">
-          <form id="log-edit-form">
+          <form id="workout-form">
 
             <div class="form-floating mb-3">
               <input type="date" class="form-control" id="date" required>
@@ -103,7 +103,7 @@
         </div>
             <div class="modal-footer border-secondary">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" id="log-exercise-button" disabled class="btn btn-primary" data-bs-target="#exercise-log-modal" data-bs-toggle="modal">Log individual exercise</button>
+                <button type="submit" id="log-exercise-button" disabled class="btn btn-primary" data-bs-target="#exercise-modal" data-bs-toggle="modal">Log individual exercise</button>
                 <button type="submit" id="save-button" class="btn btn-success">Log Workout</button>
 
             </div>
@@ -111,22 +111,21 @@
 
         </form>
 
-      </div>
     </div>
 </div>
 
 <!-- Second modal (log individual exercise) -->
-<div class="modal custom-modal-padding fade" id="exercise-log-modal" aria-hidden="true" aria-labelledby="exerciseLogModal" tabindex="-1">
+<div class="modal custom-modal-padding fade" id="exercise-modal" aria-hidden="true" aria-labelledby="exerciseLogModal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
 
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exerciseLogModal">Log Exercise</h1>
+        <h1 class="modal-title fs-5" id="exercise-header">Log Exercise</h1>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
       <div class="modal-body">
-        <form id="exercise-log-form">
+        <form id="exercise-form">
 
           <div class="form-floating mb-3">
             <select class="form-select" id="body-focus-2" aria-label="body focus select">
@@ -168,6 +167,7 @@
       </div>
 
       <div class="modal-footer border-secondary">
+        <button type="button" class="btn btn-secondary" data-bs-target="#workout-modal" data-bs-toggle="modal">Back</button>
         <button id="log-more" type="submit" class="btn btn-primary">Log more exercise</button>
         <button id="workout-done" type="submit" class="btn btn-success">Workout done!</button>
       </div>

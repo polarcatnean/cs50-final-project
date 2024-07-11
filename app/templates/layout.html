@@ -33,7 +33,7 @@
                     {% if session["user_id"] %}
                         <ul class="navbar-nav me-auto">
                             <li class="nav-item"><a class="nav-link" href="/log">Log</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/plan">Plan</a></li>
+                            <li class="nav-item"><a class="nav-link disabled" href="/">Plan</a></li>
                             <li class="nav-item"><a class="nav-link" href="/timer">Timer</a></li>
                         </ul>
                         <ul class="navbar-nav ms-auto">
@@ -46,6 +46,11 @@
                                  Sign out</a></li>
                         </ul>
                     {% else %}
+                        <ul class="navbar-nav me-auto">
+                            <li class="nav-item"><a class="nav-link active" aria-current="page" href="/log">Log</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/">Plan</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/timer">Timer</a></li>
+                        </ul>
                         <ul class="navbar-nav ms-auto">
                             <li class="nav-item"><a class="nav-link" href="/auth/register">Register</a></li>
                             <li class="nav-item"><a class="nav-link" href="/auth/login">
