@@ -1,0 +1,76 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Stats
+{% endblock %}
+
+{% block main %}
+<div>
+    <h2>Your Stats for <span id="current-month"></span></h2>
+    
+    <div class="row mt-4">
+        <!-- Summary Cards -->
+        <div class="col-sm-12 col-md-3 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"><h3><span id="exercise-days">0</span></h3> exercise days</h5>
+                    <p class="card-text" id=""></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 col-md-3 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Cardio Days</h5>
+                    <p class="card-text" id="cardio-days">0</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 col-md-3 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Strength Training Days</h5>
+                    <p class="card-text" id="strength-days">0</p>
+                    <p class="card-text" id="upper-body-days">Upper Body: 0</p>
+                    <p class="card-text" id="lower-body-days">Lower Body: 0</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4 col-md-3 mb-3" id="yoga-card">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Yoga Days</h5>
+                    <p class="card-text" id="yoga-days">0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Detailed Stats and Charts -->
+    <!-- <div class="row mt-4">
+        <div class="col-md-12">
+            <h3>Detailed Statistics</h3> -->
+            <!-- Add your detailed statistics here -->
+        <!-- </div>
+    </div> -->
+
+    <div class="row mt-4">
+        <div class="col-md-6 mb-3">
+            <h3>Exercise Trends</h3>
+            <div class="chart-container" style="position: relative; height:40vh; width:80vw">
+                <canvas id="exercise-ratio-chart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<body>
+  
+</body>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/stats.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}

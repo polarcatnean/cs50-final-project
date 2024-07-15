@@ -266,7 +266,7 @@ document.addEventListener('DOMContentLoaded', function() {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
     headerToolbar: {
       left: 'title',
-      center: '',
+      // center: '',
       right: 'today prev,next' 
     },
     // defaultView: 'dayGridMonth', // unknown option

@@ -33,8 +33,8 @@
                     {% if session["user_id"] %}
                         <ul class="navbar-nav me-auto">
                             <li class="nav-item"><a class="nav-link" href="/log">Log</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/">Stats</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/timer">Timer</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/stats">Stats</a></li>
+                            <li class="nav-item"><a class="nav-link disabled" href="/timer">Timer</a></li>
                         </ul>
                         <ul class="navbar-nav ms-auto">
                             <li class="nav-item"><a class="nav-link" href="/auth/account"><strong>@{{ username }}</strong></a></li>
@@ -85,7 +85,7 @@
 
         <!-- Custom JS -->
         <script src="{{ url_for('main.dist', filename='bundle.js') }}"></script>
-        
+        {% block scripts %}{% endblock %}
     </body>
 
 </html>

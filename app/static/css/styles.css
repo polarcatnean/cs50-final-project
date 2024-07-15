@@ -101,6 +101,9 @@ a:hover {
 }
 
 
+.card {
+  text-align: center;
+}
 
 
 /* Ensure the calendar fills the remaining viewport height */
@@ -244,9 +247,9 @@ and the cell is displayed as a flex container to manage the layout of its childr
 }
 
 /* header */
-.fc-toolbar-chunk:nth-child(2) {
+/* .fc-toolbar-chunk:nth-child(2) {
   width: 40vw; 
-} 
+}  */
 .fc-toolbar-chunk:nth-child(3) {
   text-align: center;
 }

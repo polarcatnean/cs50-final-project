@@ -35,6 +35,11 @@ def log_page():
     return redirect("/")
 
 
+@main.route("/stats")
+def stats_page():
+    return render_template("stats.html")
+
+
 @main.route("/timer")
 def timer_page():
     return render_template("timer.html")

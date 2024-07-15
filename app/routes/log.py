@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, render_template, redirect, url_for, request, session
-from sqlalchemy import func
+from sqlalchemy import extract, func
 from app.models import db, Exercise, Workout, WorkoutExercise
 from datetime import datetime
 from app.helpers import login_required
@@ -239,3 +239,67 @@ def get_workout_details(event_id):
 
     return render_template('workout-details.html', event=event, exercises=exercises, muscle_groups=muscle_groups, secondary_muscle_groups=secondary_muscle_groups)
 
+
+@log.route('/get_monthly_stats/<YYYYMM>', methods=["GET"])
+@login_required
+def get_monthly_stats(YYYYMM):
+    user_id = session.get("user_id")
+
+    # Parse the year_month parameter (format 'YYYYMM')
+    year = int(YYYYMM[:4])
+    month = int(YYYYMM[4:])
+
+    # Query the total exercise days
+    total_days = db.session.query(func.count(Workout.id)).filter(
+        extract('year', Workout.date) == year,
+        extract('month', Workout.date) == month,
+        Workout.user_id == user_id
+    ).scalar()
+
+    # Query the cardio days
+    cardio_days = db.session.query(func.count(Workout.id)).filter(
+        extract('year', Workout.date) == year,
+        extract('month', Workout.date) == month,
+        Workout.user_id == user_id,
+        Workout.workout_type == 'cardio'
+    ).scalar()
+
+    # Query the upper body days
+    upper_body_days = db.session.query(func.count(Workout.id)).filter(
+        extract('year', Workout.date) == year,
+        extract('month', Workout.date) == month,
+        Workout.user_id == user_id,
+        Workout.body_focus == 'upper'
+    ).scalar()
+
+    # Query the lower body days
+    lower_body_days = db.session.query(func.count(Workout.id)).filter(
+        extract('year', Workout.date) == year,
+        extract('month', Workout.date) == month,
+        Workout.user_id == user_id,
+        Workout.body_focus == 'lower'
+    ).scalar()
+
+    # Query the strength days (upper + lower)
+    strength_days = upper_body_days + lower_body_days
+
+    # Query the yoga days
+    yoga_days = db.session.query(func.count(Workout.id)).filter(
+        extract('year', Workout.date) == year,
+        extract('month', Workout.date) == month,
+        Workout.user_id == user_id,
+        Workout.workout_type == 'yoga_pilates'
+    ).scalar()
+
+
+    # Convert the workouts to a JSON-serializable format (e.g., dictionaries)
+    stats_data = {
+        'exerciseDays': total_days,
+        'cardioDays': cardio_days,
+        'upperBodyDays': upper_body_days,
+        'lowerBodyDays': lower_body_days,
+        'strengthDays': strength_days,
+        'yogaDays': yoga_days
+    }
+
+    return jsonify(stats_data)
