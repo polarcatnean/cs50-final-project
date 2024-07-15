@@ -29,6 +29,16 @@
 
   <div class="offcanvas-footer">
     <div class="">
+      <!-- <div class="btn-group dropup" role="group">
+        <button type="button" class="btn btn-secondary-2 me-2 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          Edit
+        </button>
+        <ul class="dropdown-menu">
+          <li><a class="dropdown-item" href="#" disabled>Delete exercise</a></li>
+          <li><a class="dropdown-item" href="#">Edit exercises</a></li>
+          <li><a class="dropdown-item" href="#">Edit workout</a></li>
+        </ul>
+      </div> -->
       <button class="btn btn-secondary-2 me-2" type="button" id="edit-workout">Edit</button>
       <button class="btn btn-outline-danger" type="button" id="delete-workout">Delete Workout</button>
     </div>
@@ -159,7 +169,7 @@
             </div>
             <div class="col">
               <div class="form-floating mb-3">
-                <input type="number" class="form-control" id="weight" required>
+                <input type="number" step="0.01" class="form-control" id="weight" required>
                 <label for="weight" class="col-form-label">Weight (kg)</label>
               </div>
             </div>

@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from config import Config
 from app.models import db
-from app.helpers import login_required, capitalise
+from app.helpers import capitalise, format_weight
 
 
 
@@ -13,6 +13,7 @@ def create_app():
 
     # Custom filter
     app.jinja_env.filters["capitalise"] = capitalise
+    app.jinja_env.filters['format_weight'] = format_weight
     
     # Initialize plugins
     db.init_app(app)

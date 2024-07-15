@@ -37,3 +37,7 @@ def capitalise(str):
     return capitalised_string
 
 
+def format_weight(value):
+    if value.is_integer():
+        return f"{int(value)}"
+    return f"{value:.2f}"

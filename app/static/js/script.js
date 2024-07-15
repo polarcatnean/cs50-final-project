@@ -63,6 +63,20 @@ function formatDateYMD(dateStr) {
   return new Intl.DateTimeFormat('en-CA', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(date);
 }
 
+function formatDateDMY(dateStr) {
+  // Create a new Date object from the input date string
+  const date = new Date(dateStr);
+  // Check if the date is valid
+  if (isNaN(date.getTime())) {
+      throw new Error('Invalid date format');
+  }
+  // Format the date as DD-MM-YYYY
+  const day = ("0" + date.getDate()).slice(-2);
+  const month = ("0" + (date.getMonth() + 1)).slice(-2);
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
 function capitalise(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
@@ -100,11 +114,11 @@ function updateWorkoutUI() {
 function updateExerciseUI() {
   const mode = exerciseForm.dataset.mode;
   if (mode === LOG_MODE) {
-    exerciseModalHeader.textContent = 'Log Exercise';
+    exerciseModalHeader.textContent = `Log exercise #${currentExerciseIndex + 1}`;
     logMoreButton.textContent = 'Log more exercise';
     workoutDoneButton.textContent = 'Workout done!';
   } else if (mode === EDIT_MODE) {
-    exerciseModalHeader.textContent = 'Edit Exercise';
+    exerciseModalHeader.textContent = `Edit exercise ${currentExerciseIndex + 1}/${exercisesData.length}`;
     logMoreButton.textContent = 'Save & edit next exercise';
     workoutDoneButton.textContent = 'Save all changes';
   }
@@ -174,6 +188,7 @@ function populateExerciseForm() {
       document.getElementById('sets').value = exercise.sets;
       document.getElementById('reps').value = exercise.reps;
       document.getElementById('weight').value = exercise.weight;
+      updateExerciseUI(); // Update the modal header
   } 
 }
 
@@ -225,7 +240,8 @@ function resetVariables() {
 document.addEventListener('DOMContentLoaded', function() {
   // Initialise flatpickr on the date input field
   flatpickr("#date", {
-    dateFormat: "j M Y", // Set the desired date format
+    dateFormat: "d M Y", // Set the desired date format
+    disableMobile: "true"
   });
 
   // Event listeners
@@ -253,7 +269,7 @@ document.addEventListener('DOMContentLoaded', function() {
       center: '',
       right: 'today prev,next' 
     },
-    defaultView: 'dayGridMonth',
+    // defaultView: 'dayGridMonth', // unknown option
     events: '/log/load',  // route to fetch events from
     eventContent: function(info) { // add HTML to event title
       let customHtml = info.event.title; 
@@ -261,25 +277,27 @@ document.addEventListener('DOMContentLoaded', function() {
       content.innerHTML = customHtml;
       return { domNodes: [content] };
     },
-    datesSet: function() { // adding progress bar
-        let middleElement = document.querySelectorAll('.fc-toolbar-chunk')[1];
+    // datesSet: function() { // adding progress bar
+    //     let middleElement = document.querySelectorAll('.fc-toolbar-chunk')[1];
         
-        let progressBar = document.createElement("div");
-        progressBar.className = "progress";
-        progressBar.role = "progressbar";
+    //     let progressBar = document.createElement("div");
+    //     progressBar.className = "progress";
+    //     progressBar.role = "progressbar";
 
-        let innerDiv = document.createElement('div');
-        innerDiv.className = 'progress-bar progress-bar-striped';
-        innerDiv.innerText = '65%';
+    //     let innerDiv = document.createElement('div');
+    //     innerDiv.className = 'progress-bar progress-bar-striped';
+    //     innerDiv.innerText = '65%';
 
-        progressBar.appendChild(innerDiv);
-        middleElement.innerHTML = "";
-        middleElement.appendChild(progressBar);
-    },
+    //     progressBar.appendChild(innerDiv);
+    //     middleElement.innerHTML = "";
+    //     middleElement.appendChild(progressBar);
+    // },
     dateClick: function(info) {
         info.jsEvent.preventDefault();
         selectedDate = info.dateStr;
-        document.getElementById('date').value = formatDate(selectedDate);
+        // document.getElementById('date').value = formatDate(selectedDate);
+        const flatpickrDate = document.querySelector("#date")._flatpickr;
+        flatpickrDate.setDate(formatDate(selectedDate));
 
         let time = new Date().toLocaleTimeString();
         console.log(`Date cell ${selectedDate} is clicked at ${time}`);
@@ -288,7 +306,9 @@ document.addEventListener('DOMContentLoaded', function() {
         setMode(LOG_MODE, WORKOUT_TYPE);
         setMode(LOG_MODE, EXERCISE_TYPE);
   
-        new bootstrap.Modal(workoutModal).show();
+        // Ensure modal is properly shown
+        // const workoutModalInstance = new bootstrap.Modal(document.getElementById('workout-modal'));
+        workoutModalInstance.show();
     },
     eventClick: function(info) {
       let event = info.event; // the associated Event Object
@@ -410,27 +430,25 @@ async function handleFormSubmit(event) {
             
           }
           else if (exerciseMode === EDIT_MODE) {
-          
+            // Fetch the new workout details // should use try catch??
+            fetch(`/log/details/${selectedWorkoutId}`)
+            .then(response => response.text())
+            .then(html => {
+                let workoutDetailsEl = document.getElementById('workout-details');
+                workoutDetailsEl.innerHTML = html; // Insert the HTML content
+            })
+            .catch(error => {
+                console.error('Error fetching workout details:', error);
+            });
+
+            // Hide and then show the offcanvas with updated details
+            const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
+            offcanvasInstance.hide();
+
+            setTimeout(() => {
+              offcanvasInstance.show();
+            }, 200); // Delay to ensure the offcanvas is hidden before showing it again
           }
-
-          // Fetch the new workout details // should use try catch??
-          fetch(`/log/details/${selectedWorkoutId}`)
-          .then(response => response.text())
-          .then(html => {
-              let workoutDetailsEl = document.getElementById('workout-details');
-              workoutDetailsEl.innerHTML = html; // Insert the HTML content
-          })
-          .catch(error => {
-              console.error('Error fetching workout details:', error);
-          });
-
-          // Hide and then show the offcanvas with updated details
-          const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
-          offcanvasInstance.hide();
-
-          setTimeout(() => {
-            offcanvasInstance.show();
-          }, 200); // Delay to ensure the offcanvas is hidden before showing it again
         })
         .then(() => {
           resetVariables();
@@ -540,7 +558,7 @@ function submitExerciseForm(exerciseMode) {
       exercise_id: document.getElementById('exercise-id').value,
       sets: document.getElementById('sets').value,
       reps: document.getElementById('reps').value,
-      weight: document.getElementById('weight').value
+      weight: parseFloat(document.getElementById('weight').value).toFixed(2)
     };
 
     console.log(`Submitting exercise form in ${exerciseMode} | WorkoutId: ${selectedWorkoutId}`);
@@ -561,9 +579,11 @@ function submitExerciseForm(exerciseMode) {
       })
       .then(data => {
         console.log('Success:', data);
-        
         // Handle success
-        if (exerciseMode === EDIT_MODE) {
+        if (exerciseMode === LOG_MODE) {
+          currentExerciseIndex++;
+        }
+        else if (exerciseMode === EDIT_MODE) {
           currentExerciseIndex++;
           populateExerciseForm();
           
@@ -574,9 +594,6 @@ function submitExerciseForm(exerciseMode) {
           if (currentExerciseIndex == exercisesData.length - 1) {
             logMoreButton.textContent = 'Save changes & add new exercise';
           }
-        } else {
-          // Reset form for logging more exercises
-          // exerciseForm.reset();
         }
         resolve();
       })
@@ -601,6 +618,8 @@ function handleEditBtnClick() {
         document.getElementById('workout-name').value = data.workout_name;
         document.getElementById('workout-type').value = data.workout_type;
         document.getElementById('body-focus-1').value = data.body_focus;
+
+
 
         if (data.has_exercises == 0) {
           console.log("Workout has no recorded exercises, changing mode for exercise")
