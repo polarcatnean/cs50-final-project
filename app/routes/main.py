@@ -1,4 +1,4 @@
-from flask import Blueprint, redirect, render_template, session, send_from_directory
+from flask import Blueprint, redirect, render_template, session, send_from_directory, g
 from app.models import db, User
 from app.helpers import login_required
 import os
@@ -6,14 +6,23 @@ import os
 
 main = Blueprint('main', __name__)
 
+@main.before_app_request
+def load_logged_in_user():
+    user_id = session.get('user_id')
+    if user_id is None:
+        g.user = None
+    else:
+        g.user = db.session.scalars(db.select(User).filter_by(id=user_id)).first()
+
+@main.context_processor
+def inject_user():
+    return dict(username=g.user.username if g.user else None)
+
 
 @main.route("/")
 @login_required
 def index():
-    user = db.session.scalars(db.select(User).filter_by(id=session["user_id"])).first()
-    # if user is None:
-    #     return redirect("auth/login")
-    return render_template("index.html", username=user.username)
+    return render_template("index.html")
 
 
 @main.route('/dist/<path:filename>')
