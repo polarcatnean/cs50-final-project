@@ -163,10 +163,15 @@ function toggleLogExerciseBtn() {
 }
 
 function initExerciseModal() {
+
   if (selectedBodyFocus === "") {
     selectedBodyFocus = document.getElementById('body-focus-1').value;
+    console.log(set)
   }
-  document.getElementById('body-focus-2').value = selectedBodyFocus;
+
+  if (exerciseMode == LOG_MODE) {
+    document.getElementById('body-focus-2').value = selectedBodyFocus;
+  }
   
   // init exercise dropdown choices
   fetchExerciseOptions(document.getElementById('body-focus-2').value);
@@ -185,6 +190,7 @@ function populateExerciseForm() {
       const exercise = exercisesData[currentExerciseIndex];
       document.getElementById('exercise-id').dataset.value = exercise.exercise_id;
       document.getElementById('exercise-id').value = exercise.exercise_id;
+      document.getElementById('body-focus-2').value = exercise.body_focus;
       document.getElementById('sets').value = exercise.sets;
       document.getElementById('reps').value = exercise.reps;
       document.getElementById('weight').value = exercise.weight;
@@ -266,7 +272,7 @@ document.addEventListener('DOMContentLoaded', function() {
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
     headerToolbar: {
       left: 'title',
-      // center: '',
+      center: '',
       right: 'today prev,next' 
     },
     // defaultView: 'dayGridMonth', // unknown option
@@ -368,6 +374,7 @@ async function handleFormSubmit(event) {
     
               if (exercisesData.length > 0) {
                 populateExerciseForm();
+                console.log(`Fetched exercise i${currentExerciseIndex}/${exercisesData.length-1}`);
               }
     
             } catch (error) {
@@ -407,7 +414,13 @@ async function handleFormSubmit(event) {
               exerciseForm.reset();
             }
             else if (exerciseMode === EDIT_MODE) {
-              if (currentExerciseIndex == exercisesData.length) {
+              populateExerciseForm();
+              console.log(`Fetched exercise i${currentExerciseIndex}/${exercisesData.length-1}`);
+              // At last exercise to edit
+              if (currentExerciseIndex == exercisesData.length - 1) {
+                logMoreButton.textContent = 'Save changes & add new exercise';
+              }
+              if (currentExerciseIndex == exercisesData.length) { // at last exercise 
                 setMode(LOG_MODE, EXERCISE_TYPE);
                 exerciseForm.reset();
               }
@@ -430,28 +443,30 @@ async function handleFormSubmit(event) {
             
           }
           else if (exerciseMode === EDIT_MODE) {
-            // Fetch the new workout details // should use try catch??
-            fetch(`/log/details/${selectedWorkoutId}`)
-            .then(response => response.text())
-            .then(html => {
-                let workoutDetailsEl = document.getElementById('workout-details');
-                workoutDetailsEl.innerHTML = html; // Insert the HTML content
-            })
-            .catch(error => {
-                console.error('Error fetching workout details:', error);
-            });
 
-            // Hide and then show the offcanvas with updated details
-            const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
-            offcanvasInstance.hide();
-
-            setTimeout(() => {
-              offcanvasInstance.show();
-            }, 200); // Delay to ensure the offcanvas is hidden before showing it again
           }
+          
+          // Fetch the new workout details // should use try catch??
+          fetch(`/log/details/${selectedWorkoutId}`)
+          .then(response => response.text())
+          .then(html => {
+              let workoutDetailsEl = document.getElementById('workout-details');
+              workoutDetailsEl.innerHTML = html; // Insert the HTML content
+          })
+          .catch(error => {
+              console.error('Error fetching workout details:', error);
+          });
+          // Hide and then show the offcanvas with updated details
+          const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
+          offcanvasInstance.hide();
+
+          setTimeout(() => {
+            offcanvasInstance.show();
+          }, 200); // Delay to ensure the offcanvas is hidden before showing it again
         })
         .then(() => {
-          resetVariables();
+          // resetVariables(); // commented out because bug (after submitting edits, the edit workout becomes unusable
+                               // reset only after the OffCanvas is hidden?
         })
         .catch(error => {
           console.error('Error during form submission:', error);
@@ -585,7 +600,7 @@ function submitExerciseForm(exerciseMode) {
         }
         else if (exerciseMode === EDIT_MODE) {
           currentExerciseIndex++;
-          populateExerciseForm();
+          // populateExerciseForm();
           
           console.log(`currentExerciseIndex=${currentExerciseIndex}`);
           console.log(`exercisesData.length=${exercisesData.length}`);
@@ -594,7 +609,7 @@ function submitExerciseForm(exerciseMode) {
           if (currentExerciseIndex == exercisesData.length - 1) {
             logMoreButton.textContent = 'Save changes & add new exercise';
           }
-        }
+        } 
         resolve();
       })
       .catch(error => {
@@ -618,8 +633,6 @@ function handleEditBtnClick() {
         document.getElementById('workout-name').value = data.workout_name;
         document.getElementById('workout-type').value = data.workout_type;
         document.getElementById('body-focus-1').value = data.body_focus;
-
-
 
         if (data.has_exercises == 0) {
           console.log("Workout has no recorded exercises, changing mode for exercise")

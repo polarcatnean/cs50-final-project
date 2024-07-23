@@ -168,6 +168,7 @@ def get_exercise_data(workout_id):
             # "index": index,
             "id": exercise.id,
             "exercise_id": exercise.exercise_id,
+            "body_focus": exercise.info_exercise.body_focus,
             "sets": exercise.sets,
             "reps": exercise.reps,
             "weight": exercise.weight_kg
@@ -264,6 +265,23 @@ def get_monthly_stats(YYYYMM):
         Workout.workout_type == 'cardio'
     ).scalar()
 
+    # Query the strength days
+    strength_days = db.session.query(func.count(Workout.id)).filter(
+        extract('year', Workout.date) == year,
+        extract('month', Workout.date) == month,
+        Workout.user_id == user_id,
+        Workout.workout_type == 'strength'
+    ).scalar()
+
+    # Query the full body days
+    full_body_days = db.session.query(func.count(Workout.id)).filter(
+        extract('year', Workout.date) == year,
+        extract('month', Workout.date) == month,
+        Workout.user_id == user_id,
+        Workout.workout_type == 'strength',
+        Workout.body_focus == 'full'
+    ).scalar()
+
     # Query the upper body days
     upper_body_days = db.session.query(func.count(Workout.id)).filter(
         extract('year', Workout.date) == year,
@@ -280,8 +298,6 @@ def get_monthly_stats(YYYYMM):
         Workout.body_focus == 'lower'
     ).scalar()
 
-    # Query the strength days (upper + lower)
-    strength_days = upper_body_days + lower_body_days
 
     # Query the yoga days
     yoga_days = db.session.query(func.count(Workout.id)).filter(
@@ -296,6 +312,7 @@ def get_monthly_stats(YYYYMM):
     stats_data = {
         'exerciseDays': total_days,
         'cardioDays': cardio_days,
+        'fullBodyDays' : full_body_days,
         'upperBodyDays': upper_body_days,
         'lowerBodyDays': lower_body_days,
         'strengthDays': strength_days,

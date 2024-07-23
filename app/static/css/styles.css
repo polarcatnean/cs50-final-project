@@ -105,6 +105,16 @@ a:hover {
   text-align: center;
 }
 
+.highlight-number {
+  font-size: 2.5rem; /* Larger font size */
+  /* font-weight: bold; 
+  color: #007bff;  */
+}
+
+.highlight-number-2 {
+  font-size: 1.75rem; 
+}
+
 
 /* Ensure the calendar fills the remaining viewport height */
 #calendar-container {
@@ -438,6 +448,12 @@ body.modal-open {
       padding-left: 1rem; 
       padding-right: 1rem;
   }
+
+  .btn-group button {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+
 }
 
 
@@ -482,4 +498,5 @@ body.modal-open {
     font-weight: bold;
   }
 
+  
 }

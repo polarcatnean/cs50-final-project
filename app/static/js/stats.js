@@ -1,4 +1,5 @@
 let statsData = {};
+let exerciseRatioChart;
 
 document.addEventListener('DOMContentLoaded', () => {
     const monthNames = [
@@ -8,81 +9,112 @@ document.addEventListener('DOMContentLoaded', () => {
         "November", "December"
     ];
 
-    const now = new Date();
-    const month = String(now.getMonth() + 1).padStart(2, '0'); // Get month and pad with leading zero if needed
-    const year = now.getFullYear();
-    const currentMonth = `${monthNames[now.getMonth()]} ${year}`;
-    const YYYYMM = `${year}${month}`;
+    let currentDate = new Date();
 
-    document.getElementById('current-month').textContent = currentMonth;
+    const currentMonthDisplay = document.getElementById('current-month');
+    const prevMonthBtn = document.getElementById('prev-month-btn');
+    const thisMonthBtn = document.getElementById('this-month-btn');
+    const nextMonthBtn = document.getElementById('next-month-btn')
 
-    // get data
-    fetch(`/log/get_monthly_stats/${YYYYMM}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Success:', data);
-        
-        statsData = {
-            exerciseDays: data.exerciseDays,
-            cardioDays: data.cardioDays,
-            upperBodyDays: data.upperBodyDays,
-            lowerBodyDays: data.lowerBodyDays,
-            strengthDays: data.strengthDays,
-            yogaDays : data.yogaDays
-            // yogaDays : data.yogaDays > 0 ? data.yogaDays : 'none'
-        };
 
-        document.getElementById('exercise-days').textContent = statsData.exerciseDays;
-        document.getElementById('cardio-days').textContent = statsData.cardioDays;
-        document.getElementById('strength-days').textContent = statsData.strengthDays;
-        // if (statsData.yogaDays > 0) {
-        //     document.getElementById('yoga-days').textContent = statsData.yogaDays;
-        // } else {
-        //     document.getElementById('yoga-card').style.display = 'none';
-        // }
+    // Function to fetch and display stats
+    function fetchAndDisplayStats(year, month) {
+        const YYYYMM = `${year}${String(month).padStart(2, '0')}`;
+        currentMonthDisplay.textContent = `${monthNames[month - 1]} ${year}`;
 
-        const totalDays = statsData.exerciseDays;
-        const cardioRatio = (statsData.cardioDays / totalDays) * 100;
-        const strengthRatio = (statsData.strengthDays / totalDays) * 100;
-        const yogaRatio = (statsData.yogaDays / totalDays) * 100;
-        
-        createChart(cardioRatio, strengthRatio, yogaRatio);
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred while fetching stats.');
+        fetch(`/log/get_monthly_stats/${YYYYMM}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Success:', data);
+            
+            statsData = {
+                exerciseDays: data.exerciseDays,
+                cardioDays: data.cardioDays,
+                fullBodyDays : data.fullBodyDays,
+                upperBodyDays: data.upperBodyDays,
+                lowerBodyDays: data.lowerBodyDays,
+                strengthDays: data.strengthDays,
+                yogaDays : data.yogaDays
+                // yogaDays : data.yogaDays > 0 ? data.yogaDays : 'none'
+            };
+
+            document.getElementById('exercise-days').textContent = statsData.exerciseDays;
+            document.getElementById('cardio-days').textContent = statsData.cardioDays;
+            document.getElementById('strength-days').textContent = statsData.strengthDays;
+            document.getElementById('full-body-days').textContent = statsData.fullBodyDays;
+            document.getElementById('lower-body-days').textContent = statsData.upperBodyDays;
+            document.getElementById('upper-body-days').textContent = statsData.lowerBodyDays;
+            document.getElementById('yoga-days').textContent = statsData.yogaDays;
+
+            const totalDays = statsData.exerciseDays;
+            const cardioRatio = (statsData.cardioDays / totalDays) * 100;
+            const strengthRatio = (statsData.strengthDays / totalDays) * 100;
+            const yogaRatio = (statsData.yogaDays / totalDays) * 100;
+            
+            createChart(cardioRatio, strengthRatio, yogaRatio);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while fetching stats.');
+        });
+    }
+
+    // Fetch initial stats for current month and year
+    fetchAndDisplayStats(currentDate.getFullYear(), currentDate.getMonth() + 1);
+
+    // Handle previous month button click
+    prevMonthBtn.addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        fetchAndDisplayStats(currentDate.getFullYear(), currentDate.getMonth() + 1);
+    });
+
+    // Handle this month button click
+    thisMonthBtn.addEventListener('click', () => {
+        fetchAndDisplayStats(currentDate.getFullYear(), currentDate.getMonth() + 1);
+    });
+
+    // Handle next month button click
+    nextMonthBtn.addEventListener('click', () => {
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        fetchAndDisplayStats(currentDate.getFullYear(), currentDate.getMonth() + 1);
     });
 });
 
 
 function createChart(cardioRatio, strengthRatio, yogaRatio) {
     const ctx = document.getElementById('exercise-ratio-chart').getContext('2d');
-    const exerciseRatioChart = new Chart(ctx, {
+
+    // Destroy existing chart instance if it exists
+    if (exerciseRatioChart) {
+        exerciseRatioChart.destroy();
+    }
+
+    exerciseRatioChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
             labels: ['Cardio', 'Strength Training', 'Yoga'],
             datasets: [{
-                label: '%',
+                label: 'Exercise Ratio',
                 data: [cardioRatio, strengthRatio, yogaRatio],
                 backgroundColor: [
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)'
+                    'rgba(245, 179, 176, 0.4)',
+                    'rgba(216, 172, 200, 0.4)',
+                    'rgba(149, 161, 226, 0.4)'
                 ],
                 borderColor: [
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)'
+                    'rgba(245, 179, 176, 1)',
+                    'rgba(216, 172, 200, 1)',
+                    'rgba(149, 161, 226, 1)'
                 ],
                 borderWidth: 1
             }]
@@ -90,13 +122,24 @@ function createChart(cardioRatio, strengthRatio, yogaRatio) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            layout: {
+                padding: {
+                    bottom: 0,
+                }
+            },
             plugins: {
                 legend: {
                     position: 'top',
+                    align: 'center',
+                    labels: {
+                        padding: 10,
+                        boxWidth: 20,
+                        // color: 'white'
+                    }
                 },
                 title: {
-                    display: true,
-                    text: 'Exercise Type'
+                    display: false,
+                    text: 'Exercise Type Ratio'
                 }
             }
         }

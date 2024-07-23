@@ -36,6 +36,7 @@ def log_page():
 
 
 @main.route("/stats")
+@login_required
 def stats_page():
     return render_template("stats.html")
 

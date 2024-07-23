@@ -6,60 +6,86 @@
 
 {% block main %}
 <div>
-    <h2>Your Stats for <span id="current-month"></span></h2>
-    
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mt-2">Your Stats for <span id="current-month"></span></h2>
+
+        <div class="btn-group" role="group">
+            <button id="prev-month-btn" class="btn btn-secondary me-1"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-left-fill" viewBox="0 0 16 16">
+                <path d="m3.86 8.753 5.482 4.796c.646.566 1.658.106 1.658-.753V3.204a1 1 0 0 0-1.659-.753l-5.48 4.796a1 1 0 0 0 0 1.506z"/>
+            </svg></button>
+            <button id="this-month-btn" class="btn btn-secondary me-1">
+                This Month</button>
+            <button id="next-month-btn" class="btn btn-secondary"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-caret-right-fill" viewBox="0 0 16 16">
+                <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
+            </svg></button>
+        </div>
+    </div>
+
     <div class="row mt-4">
         <!-- Summary Cards -->
-        <div class="col-sm-12 col-md-3 mb-3">
+        <div class="col-sm-12 col-md-12 mb-3">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title"><h3><span id="exercise-days">0</span></h3> exercise days</h5>
+                    <h5 class="card-title"><h3><span id="exercise-days" class="highlight-number">0</span></h3> exercise days</h5>
                     <p class="card-text" id=""></p>
                 </div>
             </div>
         </div>
-        <div class="col-sm-4 col-md-3 mb-3">
+        <div class="col-sm-4 col-md-4 mb-3">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Cardio Days</h5>
-                    <p class="card-text" id="cardio-days">0</p>
+                    <p class="card-text">
+                        <span class="highlight-number-2" id="cardio-days">0</span>
+                    </p>
                 </div>
             </div>
         </div>
-        <div class="col-sm-4 col-md-3 mb-3">
+        <div class="col-sm-4 col-md-4 mb-3">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Strength Training Days</h5>
-                    <p class="card-text" id="strength-days">0</p>
-                    <p class="card-text" id="upper-body-days">Upper Body: 0</p>
-                    <p class="card-text" id="lower-body-days">Lower Body: 0</p>
+                    <p class="card-text">
+                        <span class="highlight-number-2" id="strength-days">0</span>
+                    </p>
                 </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item mb-1">Full Body <span id="full-body-days">0</span></li>
+                    <li class="list-group-item mb-1">Upper Body <span id="upper-body-days">0</span></li>
+                    <li class="list-group-item">Lower Body <span id="lower-body-days">0</span></li>
+                </ul>
+                
             </div>
         </div>
-        <div class="col-sm-4 col-md-3 mb-3" id="yoga-card">
+        <div class="col-sm-4 col-md-4 mb-3" id="yoga-card">
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Yoga Days</h5>
-                    <p class="card-text" id="yoga-days">0</p>
+                    <p class="card-text">
+                        <span class="highlight-number-2" id="yoga-days">0</span>
+                    </p>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Detailed Stats and Charts -->
-    <!-- <div class="row mt-4">
-        <div class="col-md-12">
-            <h3>Detailed Statistics</h3> -->
-            <!-- Add your detailed statistics here -->
-        <!-- </div>
-    </div> -->
 
-    <div class="row mt-4">
-        <div class="col-md-6 mb-3">
-            <h3>Exercise Trends</h3>
-            <div class="chart-container" style="position: relative; height:40vh; width:80vw">
-                <canvas id="exercise-ratio-chart"></canvas>
+     <!-- Exercise Ratio Chart -->
+    <div class="row mt-3">
+        <div class="col-md-12">
+            <div class="card">  
+                <div class="card-header text-start">
+                    <h5 class="mt-2">Exercise Ratio</h3>
+                </div>
+
+                <div class="col-12 d-flex justify-content-center mt-3 mb-3">
+                    <div class="chart-container card-img-bottom" style="position: relative; height:40vh; width:80vw">
+                        <canvas id="exercise-ratio-chart"></canvas>
+                    </div>
+                </div>
+
             </div>
+
         </div>
     </div>
 </div>
