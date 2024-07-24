@@ -430,6 +430,7 @@ document.addEventListener('DOMContentLoaded', function() {
         workoutModalInstance.show();
     },
     eventClick: function(info) {
+      resetVariables();
       let event = info.event; // the associated Event Object
 
       selectedWorkoutId = event.id;
