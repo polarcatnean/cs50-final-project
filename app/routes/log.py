@@ -72,7 +72,7 @@ def delete_workout(workout_id):
     if exercises:
         exercises_deleted = True
         for exercise in exercises:
-            exercise_ids.append(exercise.exercise_id)
+            exercise_ids.append(exercise.id)
             db.session.delete(exercise)
         
     db.session.commit()
@@ -81,6 +81,23 @@ def delete_workout(workout_id):
         message = f"Workout and associated exercise ids [{exercise_ids}] deleted successfully"
     else:
         message = "Workout deleted successfully, no associated exercises found"
+    
+    return jsonify({"message": message}), 200
+
+
+@log.route("/delete_exercise/<int:workout_exercise_id>", methods=["DELETE"])
+@login_required
+def delete_exercise(workout_exercise_id):
+    user_id = session.get("user_id")
+    exercise = WorkoutExercise.query.filter_by(id=workout_exercise_id, user_id=user_id).first()
+    
+    if not exercise:
+        return jsonify({"error": "Exercise not found"}), 404
+    
+    db.session.delete(exercise)
+    db.session.commit()
+
+    message = f"Exercise #{workout_exercise_id} deleted successfully"
     
     return jsonify({"message": message}), 200
 
@@ -298,7 +315,6 @@ def get_monthly_stats(YYYYMM):
         Workout.body_focus == 'lower'
     ).scalar()
 
-
     # Query the yoga days
     yoga_days = db.session.query(func.count(Workout.id)).filter(
         extract('year', Workout.date) == year,
@@ -306,7 +322,6 @@ def get_monthly_stats(YYYYMM):
         Workout.user_id == user_id,
         Workout.workout_type == 'yoga_pilates'
     ).scalar()
-
 
     # Convert the workouts to a JSON-serializable format (e.g., dictionaries)
     stats_data = {
