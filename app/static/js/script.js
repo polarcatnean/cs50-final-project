@@ -42,6 +42,7 @@ const exerciseModalHeader = document.getElementById('exercise-header');
 const exerciseForm = document.getElementById('exercise-form');
 const logMoreButton = document.getElementById('log-more');
 const workoutDoneButton = document.getElementById('workout-done');
+const deleteExerciseButton = document.getElementById('delete-exercise');
 
 const offcanvasElement = document.getElementById('detail-canvas');
 const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
@@ -117,10 +118,12 @@ function updateExerciseUI() {
     exerciseModalHeader.textContent = `Log exercise #${currentExerciseIndex + 1}`;
     logMoreButton.textContent = 'Log more exercise';
     workoutDoneButton.textContent = 'Workout done!';
+    deleteExerciseButton.style.display = 'none';
   } else if (mode === EDIT_MODE) {
     exerciseModalHeader.textContent = `Edit exercise ${currentExerciseIndex + 1}/${exercisesData.length}`;
-    logMoreButton.textContent = 'Save & edit next exercise';
+    logMoreButton.textContent = 'Save & edit next';
     workoutDoneButton.textContent = 'Save all changes';
+    deleteExerciseButton.style.display = 'block'; // Show delete button
   }
 }
 
@@ -145,11 +148,31 @@ function fetchExerciseOptions(selectedBodyFocus) {
           if (exerciseSelect.dataset.value) {
             exerciseSelect.value = exerciseSelect.dataset.value;
             console.log(`exerciseSelect.dataset.value = ${exerciseSelect.dataset.value}`);
-            console.log(`exerciseSelect.value = ${exerciseSelect.value}`);
+            // console.log(`exerciseSelect.value = ${exerciseSelect.value}`);
             exerciseSelect.dataset.value = "";
           }
       })
       .catch(error => console.error('Error fetching exercises:', error));
+}
+
+async function fetchWorkoutDetails(eventId) {
+  try {
+    const response = await fetch(`/log/details/${eventId}`);
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const html = await response.text();
+
+    let workoutDetailsEl = document.getElementById('workout-details');
+    workoutDetailsEl.innerHTML = html; // Insert the HTML content
+    const offcanvas = new bootstrap.Offcanvas(offcanvasElement);
+    offcanvas.show(); 
+  } 
+  catch (error) {
+    console.error('Error fetching workout details:', error);
+  }
 }
 
 function toggleLogExerciseBtn() {
@@ -188,9 +211,9 @@ function initWorkoutModal() {
 function populateExerciseForm() {
   if (currentExerciseIndex < exercisesData.length) {
       const exercise = exercisesData[currentExerciseIndex];
+      document.getElementById('body-focus-2').value = exercise.body_focus;
       document.getElementById('exercise-id').dataset.value = exercise.exercise_id;
       document.getElementById('exercise-id').value = exercise.exercise_id;
-      document.getElementById('body-focus-2').value = exercise.body_focus;
       document.getElementById('sets').value = exercise.sets;
       document.getElementById('reps').value = exercise.reps;
       document.getElementById('weight').value = exercise.weight;
@@ -231,6 +254,41 @@ function deleteWorkout(workoutId) {
   });
 }
 
+async function deleteExercise(workoutExerciseId) {
+  try {
+    const deleteExerciseResponse = await fetch(`/log/delete_exercise/${workoutExerciseId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+  
+    if (!deleteExerciseResponse.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const result = await deleteExerciseResponse.json();
+    console.log('Success:', result);
+
+    // Update the UI after successful deletion
+    // For example, remove the exercise from the list, close and reopen the OffCanvas, etc.
+    // Close the modal if it's open
+    const exerciseModalInstance = bootstrap.Modal.getInstance(exerciseModal);
+    exerciseModalInstance.hide();
+    
+    const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
+    offcanvasInstance.hide();
+    fetchWorkoutDetails(selectedWorkoutId);
+    setTimeout(() => {
+      offcanvasInstance.show();
+    }, 200);
+
+  } catch (error) {
+      console.error('Error deleting exercise:', error);
+      alert('An error occurred while deleting the exercise. Try again.');
+  };
+}
+
 function resetVariables() {
   workoutMode = LOG_MODE;
   exerciseMode = LOG_MODE;
@@ -259,9 +317,10 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
   }); // ensures Modal is properly dismissed
   
-  document.getElementById('edit-workout').addEventListener('click', handleEditBtnClick);
-  document.getElementById('delete-workout').addEventListener('click', handleDeleteBtnClick); // Delete button
+  document.getElementById('edit-workout').addEventListener('click', handleEditBtn);
+  document.getElementById('delete-workout').addEventListener('click', handleDeleteBtn); // Delete button
   document.getElementById('body-focus-2').addEventListener('change', handleBodyFocus2Change); // change for Exercise selector dropdown
+  deleteExerciseButton.addEventListener('click', handleDeleteExerciseBtn);
   workoutTypeElement.addEventListener('change', toggleLogExerciseBtn);
   
 
@@ -322,19 +381,8 @@ document.addEventListener('DOMContentLoaded', function() {
       selectedWorkoutId = event.id;
       console.log(`selectedWorkoutId: ${selectedWorkoutId}`);
 
-      let offcanvas = new bootstrap.Offcanvas(offcanvasElement);
-
       // Fetch the workout details HTML from the server
-      fetch(`/log/details/${event.id}`)
-          .then(response => response.text())
-          .then(html => {
-              let workoutDetailsEl = document.getElementById('workout-details');
-              workoutDetailsEl.innerHTML = html; // Insert the HTML content
-              offcanvas.show(); // Show the offcanvas
-          })
-          .catch(error => {
-              console.error('Error fetching workout details:', error);
-          });
+      fetchWorkoutDetails(event.id);
     },
   })
 
@@ -445,7 +493,7 @@ async function handleFormSubmit(event) {
           else if (exerciseMode === EDIT_MODE) {
 
           }
-          
+
           // Fetch the new workout details // should use try catch??
           fetch(`/log/details/${selectedWorkoutId}`)
           .then(response => response.text())
@@ -465,7 +513,7 @@ async function handleFormSubmit(event) {
           }, 200); // Delay to ensure the offcanvas is hidden before showing it again
         })
         .then(() => {
-          // resetVariables(); // commented out because bug (after submitting edits, the edit workout becomes unusable
+          // resetVariables(); // commented out because of bug (after submitting edits, the edit workout becomes unusable
                                // reset only after the OffCanvas is hidden?
         })
         .catch(error => {
@@ -619,7 +667,7 @@ function submitExerciseForm(exerciseMode) {
   });
 }
 
-function handleEditBtnClick() {
+function handleEditBtn() {
   setMode(EDIT_MODE, WORKOUT_TYPE);
   setMode(EDIT_MODE, EXERCISE_TYPE);
 
@@ -649,9 +697,16 @@ function handleEditBtnClick() {
 
 }
 
-function handleDeleteBtnClick() {
+function handleDeleteBtn() {
   if (confirm('Are you sure you want to delete this workout and its associated exercises?')) {
     deleteWorkout(selectedWorkoutId);
+  }
+}
+
+function handleDeleteExerciseBtn() {
+  if (confirm('Delete this exercise?')) {
+    let workoutExerciseId = exercisesData[currentExerciseIndex].id;
+    deleteExercise(workoutExerciseId);
   }
 }
 
