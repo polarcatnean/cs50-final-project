@@ -167,7 +167,7 @@ and the cell is displayed as a flex container to manage the layout of its childr
 
 /* Today's cell background */
 .fc-day-today {
-  background-color: #352e39 !important;
+  background-color: #343334 !important;
 }
 
 /* Event text */
