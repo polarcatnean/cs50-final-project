@@ -189,7 +189,7 @@ function initExerciseModal() {
 
   if (selectedBodyFocus === "") {
     selectedBodyFocus = document.getElementById('body-focus-1').value;
-    console.log(set)
+    console.log(`selectedBodyFocus=${selectedBodyFocus}`);
   }
 
   if (exerciseMode == LOG_MODE) {
@@ -296,7 +296,60 @@ function resetVariables() {
   selectedWorkoutId = "";
   exercisesData = [];
   currentExerciseIndex = 0;
+  exerciseForm.reset();
   console.log("Reset mode, exercise form, variables");
+}
+
+function validateWorkoutForm() {
+  const date = document.getElementById('date').value;
+  const duration = document.getElementById('duration-min').value;
+  const workoutName = document.getElementById('workout-name').value;
+
+  if (!date) {
+    alert('Date is required.');
+    return false;
+  }
+
+  if (!duration || duration <= 0) {
+    alert('Duration must be a positive number.');
+    return false;
+  }
+
+  if (!workoutName) {
+    alert('Workout name is required.');
+    return false;
+  }
+
+  return true;
+}
+
+function validateExerciseForm() {
+  const exerciseId = document.getElementById('exercise-id').value;
+  const sets = document.getElementById('sets').value;
+  const reps = document.getElementById('reps').value;
+  const weight = document.getElementById('weight').value;
+
+  if (!exerciseId || exerciseId === 'Select exercise') {
+    alert('Select exercise.');
+    return false;
+  }
+
+  if (!sets || sets <= 0) {
+    alert('Sets must be a positive number.');
+    return false;
+  }
+
+  if (!reps || reps <= 0) {
+    alert('Reps must be a positive number.');
+    return false;
+  }
+
+  if (weight < 0) {
+    alert('Weight must be a non-negative number.');
+    return false;
+  }
+
+  return true;
 }
 
 
@@ -359,6 +412,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // },
     dateClick: function(info) {
         info.jsEvent.preventDefault();
+        resetVariables();
         selectedDate = info.dateStr;
         // document.getElementById('date').value = formatDate(selectedDate);
         const flatpickrDate = document.querySelector("#date")._flatpickr;
@@ -399,11 +453,16 @@ async function handleFormSubmit(event) {
   const formId = event.target.id;
 
   if (formId === 'workout-form') {
+    if (!validateWorkoutForm()) {
+      return; // Stop if validation fails
+    }
+
     await submitWorkoutForm(workoutMode);
     workoutModalInstance.hide();
 
     if (clickedButton.id === 'log-exercise-button') {
       // TODO 
+      exerciseModalInstance.show();
       if (workoutMode == LOG_MODE) {
         workoutForm.reset();
       }
