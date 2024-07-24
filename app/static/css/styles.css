@@ -94,12 +94,16 @@ a:hover {
 }
 
 .navbar a {
-  color: var(--color-text);
+  color: var(--color-grey);
 }
 .navbar a:hover {
-  color: var(--color-light-yellow);
+  color: var(--color-muted-rose) !important;
 }
 
+.nav-link.active {
+  color: var(---color-grey) !important; /* Example text color */
+  font-weight: bold !important; /* Example font weight */
+}
 
 .card {
   text-align: center;

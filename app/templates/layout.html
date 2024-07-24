@@ -85,6 +85,24 @@
 
         <!-- Custom JS -->
         <script src="{{ url_for('main.dist', filename='bundle.js') }}"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+              setActiveNavLink();
+            });
+          
+            function setActiveNavLink() {
+                const currentPath = window.location.pathname;
+                const navLinks = document.querySelectorAll('.nav-link');
+          
+              navLinks.forEach(link => {
+                const linkHref = link.getAttribute('href');
+
+                if ((currentPath === '/' && linkHref === '/log') || linkHref === currentPath) {
+                    link.classList.add('active');
+                }
+              });
+            }
+          </script>
         {% block scripts %}{% endblock %}
     </body>
 

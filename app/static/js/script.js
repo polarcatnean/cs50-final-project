@@ -353,6 +353,7 @@ function validateExerciseForm() {
 }
 
 
+
 // After DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
   // Initialise flatpickr on the date input field
