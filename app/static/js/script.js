@@ -494,20 +494,11 @@ async function handleFormSubmit(event) {
 
           }
 
-          // Fetch the new workout details // should use try catch??
-          fetch(`/log/details/${selectedWorkoutId}`)
-          .then(response => response.text())
-          .then(html => {
-              let workoutDetailsEl = document.getElementById('workout-details');
-              workoutDetailsEl.innerHTML = html; // Insert the HTML content
-          })
-          .catch(error => {
-              console.error('Error fetching workout details:', error);
-          });
+          // Fetch the new workout details
+          fetchWorkoutDetails(selectedWorkoutId);
           // Hide and then show the offcanvas with updated details
           const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
           offcanvasInstance.hide();
-
           setTimeout(() => {
             offcanvasInstance.show();
           }, 200); // Delay to ensure the offcanvas is hidden before showing it again
