@@ -311,7 +311,7 @@ function validateWorkoutForm() {
   }
 
   if (!duration || duration <= 0) {
-    alert('Duration must be a positive number.');
+    alert('Please enter correct duration');
     return false;
   }
 
@@ -560,7 +560,7 @@ async function handleFormSubmit(event) {
           offcanvasInstance.hide();
           setTimeout(() => {
             offcanvasInstance.show();
-          }, 200); // Delay to ensure the offcanvas is hidden before showing it again
+          }, 300); // Delay to ensure the offcanvas is hidden before showing it again
         })
         .then(() => {
           // resetVariables(); // commented out because of bug (after submitting edits, the edit workout becomes unusable
@@ -666,12 +666,15 @@ function submitExerciseForm(exerciseMode) {
     const url = exerciseMode === LOG_MODE ? '/log/add_exercise' : `/log/edit_exercise/${exercisesData[currentExerciseIndex].id}`;
     const method = exerciseMode === LOG_MODE ? 'POST' : 'PUT';
     
+    const weightInput = document.getElementById('weight');
+    const weightValue = weightInput.value ? parseFloat(weightInput.value).toFixed(2) : '0.00';
+
     let exerciseData = {
       workout_id: selectedWorkoutId,
       exercise_id: document.getElementById('exercise-id').value,
       sets: document.getElementById('sets').value,
       reps: document.getElementById('reps').value,
-      weight: parseFloat(document.getElementById('weight').value).toFixed(2)
+      weight: weightValue
     };
 
     console.log(`Submitting exercise form in ${exerciseMode} | WorkoutId: ${selectedWorkoutId}`);
