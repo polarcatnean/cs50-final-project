@@ -1,6 +1,7 @@
 # Workout Log Calendar
 #### Video Demo:  <URL HERE>
 
+
 ## Overview
 
 The Workout Log Calendar is a web application designed to help users log and track their workouts and exercises using a calendar interface. This project combines the Flask web framework for the backend with JavaScript and various front-end libraries to create a responsive and interactive user experience.
@@ -17,6 +18,7 @@ The primary goal of this project is to provide users with an easy-to-use tool fo
 - [Design Choices](#design-choices)
 - [License](#license)
 - [Contact](#contact)
+
 
 ## Installation
 
@@ -76,6 +78,7 @@ To install the necessary dependencies for this project, follow the steps below:
 
 Webpack is used to bundle JavaScript modules and other assets. Ensure you have the necessary Node.js packages installed by running `npm install` as described above. The Webpack configuration file (`webpack.config.js`) is already included in the project.
 
+
 ## First-time Setup
 
 Before you can use the application, you need to load the initial exercises into the database.
@@ -87,6 +90,7 @@ Before you can use the application, you need to load the initial exercises into 
     ```bash
     python load-exercises.py
     ```
+
     
 ## Usage
 
@@ -106,6 +110,7 @@ To run the project, follow these steps:
 
 3. Open your browser and navigate to `http://127.0.0.1:5000` to view the application.
 
+
 ## Features
 
 - **User Authentication**: Secure login and registration system to keep your workout data private.
@@ -114,6 +119,7 @@ To run the project, follow these steps:
 - **Calendar View**: View your logged workouts and exercises in a calendar format.
 - **Statistics**: View detailed statistics on your workout types and exercise frequencies.
 - **Responsive Design**: Accessible and functional on various devices.
+
 
 ## File Descriptions
 
@@ -147,6 +153,7 @@ To run the project, follow these steps:
 
 - **`package.json`**: Contains metadata about the project and lists the Node.js dependencies, including Webpack and its plugins.
 
+
 ## Design Choices
 
 1. **Technology Stack**: 
@@ -164,9 +171,11 @@ To run the project, follow these steps:
 
 6. **Error Handling**: Incorporated error handling in backend routes to provide meaningful feedback to users and ensure smooth operation of the application.
 
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
 
 ## Contact
 
