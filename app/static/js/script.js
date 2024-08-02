@@ -40,12 +40,15 @@ const exerciseModal = document.getElementById('exercise-modal');
 const exerciseModalInstance = new bootstrap.Modal(exerciseModal);
 const exerciseModalHeader = document.getElementById('exercise-header');
 const exerciseForm = document.getElementById('exercise-form');
+const exerciseList = document.getElementById('exercise-list');
+const exerciseSearch = document.getElementById('exercise-id');
 const logMoreButton = document.getElementById('log-more');
 const workoutDoneButton = document.getElementById('workout-done');
 const deleteExerciseButton = document.getElementById('delete-exercise');
 
 const offcanvasElement = document.getElementById('detail-canvas');
-const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
+const offcanvasInstance = new bootstrap.Offcanvas(offcanvasElement);
+// const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
 
 // Helper functions
 function formatDate(dateStr) {
@@ -155,6 +158,48 @@ function fetchExerciseOptions(selectedBodyFocus) {
       .catch(error => console.error('Error fetching exercises:', error));
 }
 
+function fetchAndPopulateExercises() {
+  fetch(`/log/load_exercises?body_focus=${selectedBodyFocus}`)
+    .then(response => response.json())
+    .then(data => {
+      exerciseList.innerHTML = '';
+
+      data.forEach(exercise => {
+        const item = document.createElement('li');
+        item.innerHTML = `<a href="#" class="dropdown-item" data-value="${exercise.id}">${capitalise(exercise.name)}</a>`;
+        exerciseList.appendChild(item);
+
+      });
+      console.log(`Fetched exercises for ${selectedBodyFocus}`);
+    })
+    .catch(error => console.error('Error fetching exercise list:', error));
+}
+
+// Filter exercises in the dropdown as the user types
+function filterExercises() {
+  const filter = exerciseSearch.value.toLowerCase();
+  const items = exerciseList.querySelectorAll('.dropdown-item');
+
+  items.forEach(item => {
+    const text = item.textContent.toLowerCase();
+    if (text.includes(filter)) {
+      item.style.display =''; // show item if matched with entered text (filter)
+    }
+    else {
+      item.style.display = 'none';
+    }
+  });
+
+  // Show the dropdown menu if there are matching items
+  if (filter === '' || [...items].some(item => item.style.display === '')) {
+    exerciseList.classList.add('show');
+  }
+  else {
+    exerciseList.classList.remove('show');
+  }
+
+}
+
 async function fetchWorkoutDetails(eventId) {
   try {
     const response = await fetch(`/log/details/${eventId}`);
@@ -167,8 +212,7 @@ async function fetchWorkoutDetails(eventId) {
 
     let workoutDetailsEl = document.getElementById('workout-details');
     workoutDetailsEl.innerHTML = html; // Insert the HTML content
-    const offcanvas = new bootstrap.Offcanvas(offcanvasElement);
-    offcanvas.show(); 
+    // offcanvas.show(); 
   } 
   catch (error) {
     console.error('Error fetching workout details:', error);
@@ -197,7 +241,7 @@ function initExerciseModal() {
   }
   
   // init exercise dropdown choices
-  fetchExerciseOptions(document.getElementById('body-focus-2').value);
+  fetchAndPopulateExercises(document.getElementById('body-focus-2').value);
   document.getElementById('sets').focus();
   console.log(`Init dropdown for ${selectedBodyFocus}`);
 }
@@ -213,7 +257,7 @@ function populateExerciseForm() {
       const exercise = exercisesData[currentExerciseIndex];
       document.getElementById('body-focus-2').value = exercise.body_focus;
       document.getElementById('exercise-id').dataset.value = exercise.exercise_id;
-      document.getElementById('exercise-id').value = exercise.exercise_id;
+      document.getElementById('exercise-id').value = capitalise(exercise.exercise_name);
       document.getElementById('sets').value = exercise.sets;
       document.getElementById('reps').value = exercise.reps;
       document.getElementById('weight').value = exercise.weight;
@@ -238,7 +282,7 @@ function deleteWorkout(workoutId) {
       console.log('Success:', data);
 
       // Close the workout-detail offcanvas
-      const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
+      // const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
       offcanvasInstance.hide();
 
       // Remove the event from the calendar
@@ -276,7 +320,7 @@ async function deleteExercise(workoutExerciseId) {
     const exerciseModalInstance = bootstrap.Modal.getInstance(exerciseModal);
     exerciseModalInstance.hide();
     
-    const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
+    // const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
     offcanvasInstance.hide();
     fetchWorkoutDetails(selectedWorkoutId);
     setTimeout(() => {
@@ -377,6 +421,24 @@ document.addEventListener('DOMContentLoaded', function() {
   deleteExerciseButton.addEventListener('click', handleDeleteExerciseBtn);
   workoutTypeElement.addEventListener('change', toggleLogExerciseBtn);
   
+  exerciseSearch.addEventListener('focus', () => exerciseList.classList.add('show')); // Show the dropdown when the input is focused
+  exerciseSearch.addEventListener('blur', () => setTimeout(() => exerciseList.classList.remove('show'), 200)); // Hide the dropdown when the input loses focus
+  exerciseSearch.addEventListener('input', filterExercises); // Filter exercises as the user types
+
+  // Event delegation: Handle exercise selection by clicking
+  document.getElementById('exercise-list').addEventListener('click', function(event) {
+    if (event.target && event.target.matches('a.dropdown-item')) {
+      // This code runs only if the clicked element is an <a> tag with the class "dropdown-item"
+      // Mark the clicked item as selected
+      document.querySelectorAll('#exercise-list .dropdown-item').forEach(item => item.removeAttribute('data-selected'));
+      event.target.setAttribute('data-selected', 'true');
+  
+      const exerciseName = event.target.textContent;
+      document.getElementById('exercise-id').value = exerciseName; // Set the input field's value to the exercise ID
+      document.getElementById('exercise-list').classList.remove('show');
+    }
+  });
+
 
   // Init Calendar & config
   const calendarEl = document.getElementById('calendar');
@@ -439,6 +501,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       // Fetch the workout details HTML from the server
       fetchWorkoutDetails(event.id);
+      offcanvasInstance.show();
     },
   })
 
@@ -491,7 +554,7 @@ async function handleFormSubmit(event) {
             }
           }
           if (workoutData.has_exercises == 1) {
-            logMoreButton.textContent = 'Save changes & add new exercise';
+            logMoreButton.textContent = 'Save changes & Add new exercise';
           }
         } catch (error) {
             console.error('Error fetching workout data:', error);
@@ -511,6 +574,9 @@ async function handleFormSubmit(event) {
   } 
 
   else if (formId === 'exercise-form') {
+    if (!validateExerciseForm()) {
+      return;
+    }
     // Handle LOG MORE button
     if (clickedButton.id === 'log-more') {
       submitExerciseForm(exerciseMode)
@@ -562,7 +628,8 @@ async function handleFormSubmit(event) {
           offcanvasInstance.hide();
           setTimeout(() => {
             offcanvasInstance.show();
-          }, 300); // Delay to ensure the offcanvas is hidden before showing it again
+            console.log("HELLO from setTimeout");
+          }, 200); // Delay to ensure the offcanvas is hidden before showing it again
         })
         .then(() => {
           // resetVariables(); // commented out because of bug (after submitting edits, the edit workout becomes unusable
@@ -671,9 +738,13 @@ function submitExerciseForm(exerciseMode) {
     const weightInput = document.getElementById('weight');
     const weightValue = weightInput.value ? parseFloat(weightInput.value).toFixed(2) : '0.00';
 
+    // Retrieve the selected exercise ID directly from the selected dropdown item
+    const selectedExercise = document.querySelector('#exercise-list .dropdown-item[data-selected="true"]');
+    const selectedExerciseId = selectedExercise ? selectedExercise.getAttribute('data-value') : document.getElementById('exercise-id').dataset.value;
+
     let exerciseData = {
       workout_id: selectedWorkoutId,
-      exercise_id: document.getElementById('exercise-id').value,
+      exercise_id: selectedExerciseId,
       sets: document.getElementById('sets').value,
       reps: document.getElementById('reps').value,
       weight: weightValue
@@ -767,7 +838,7 @@ function handleDeleteExerciseBtn() {
 
 function handleBodyFocus2Change(event) {
   selectedBodyFocus = event.target.value;
-  fetchExerciseOptions(selectedBodyFocus);
+  fetchAndPopulateExercises(selectedBodyFocus);
   console.log(`Fetched exercise options for ${selectedBodyFocus}`);
 }
 

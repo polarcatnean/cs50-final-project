@@ -185,6 +185,7 @@ def get_exercise_data(workout_id):
             # "index": index,
             "id": exercise.id,
             "exercise_id": exercise.exercise_id,
+            "exercise_name": exercise.info_exercise.name,
             "body_focus": exercise.info_exercise.body_focus,
             "sets": exercise.sets,
             "reps": exercise.reps,
