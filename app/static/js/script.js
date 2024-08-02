@@ -564,12 +564,16 @@ async function handleFormSubmit(event) {
 
     else if (clickedButton.id === 'save-button') {
       // TODO handle Save button click
-
-      // Close the workout-detail offcanvas
+      fetchWorkoutDetails(selectedWorkoutId);
+      // Hide and then show the offcanvas with updated details
       const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
       offcanvasInstance.hide();
+      setTimeout(() => {
+        offcanvasInstance.show();
+        console.log("HELLO from save-button");
+      }, 200); // Delay to ensure the offcanvas is hidden before showing it again
       
-      resetVariables();
+      // resetVariables();
     }
   } 
 
