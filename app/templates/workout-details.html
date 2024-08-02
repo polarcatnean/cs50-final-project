@@ -1,9 +1,17 @@
 <div class="mb-3">
     <strong>{{ event.date.strftime("%d").lstrip('0') }} {{ event.date.strftime("%B %Y") }}</strong><br>
     {{ event.workout_name | capitalise }}<br>
-    {{ event.duration_min }} min {{ event.workout_type | capitalise }}<br>
-    Body focus : {{ event.body_focus | capitalise }} Body<br>
+    <img src="{{ url_for('static', filename='images/time.png') }}" alt="duration icon" class="small-icon">
+    {{ event.duration_min }} min 
+    {% if event.workout_type == 'yoga_pilates' %}
+        {{'Stretch & Strengthen'}}
+    {% else %}
+        {{ event.workout_type | capitalise }}
+    {% endif %}<br>
+    <img src="{{ url_for('static', filename='images/muscle.png') }}" alt="body focus icon" class="small-icon">
+    Focus : {{ event.body_focus | capitalise }} Body<br>
     {% if event.calories_burned %}
+        <img src="{{ url_for('static', filename='images/calories.png') }}" alt="calories icon" class="small-icon">
         {{ event.calories_burned }} cal<br>
     {% endif %}
 </div>
@@ -25,7 +33,7 @@
             {% set exercise_details = exercise.info_exercise %} <!-- the relationship is set up in the models -->
             <tr>
                 <th scope="row">{{ loop.index }}</th>
-                <td>{{ exercise_details.name | default('Exercise not found') |  capitalise }}</td>
+                <td>{{ exercise_details.name | default('Exercise not found') | capitalise }}</td>
                 <td>{{ exercise.sets }}</td>
                 <td>{{ exercise.reps }}</td>
                 {% if exercise.weight_kg == 0 %}

@@ -430,6 +430,11 @@ body.modal-open {
   overflow-y: auto;  /* Enables vertical scrolling */
 }
 
+.small-icon {
+  width: 24px;
+  height: 24px;
+}
+
 
 /* Responsive styles */
 /* Default padding for large viewports */
