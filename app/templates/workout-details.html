@@ -1,6 +1,8 @@
 <div class="mb-3">
-    <strong>{{ event.date.strftime("%d").lstrip('0') }} {{ event.date.strftime("%B %Y") }}</strong><br>
-    {{ event.workout_name | capitalise }}<br>
+    <p style="font-size: 1.15rem; font-weight: bold;">{{ event.date.strftime("%d").lstrip('0') }} {{ event.date.strftime("%B %Y") }}</p>
+</div>
+<div class="mb-3">
+    <p style="font-size: 1.15rem;"">{{ event.workout_name | capitalise }}</p>
     <img src="{{ url_for('static', filename='images/time.png') }}" alt="duration icon" class="small-icon">
     {{ event.duration_min }} min 
     {% if event.workout_type == 'yoga_pilates' %}
@@ -67,6 +69,6 @@
     </div>
 
     {% else %}
-        <p>No individual exercises logged for this workout.</p>
+        <p>:)</p>
     {% endif %}
 </div>
