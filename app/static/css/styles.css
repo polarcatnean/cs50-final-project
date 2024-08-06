@@ -275,7 +275,7 @@ and the cell is displayed as a flex container to manage the layout of its childr
 
 /* FullCalendar toolbar buttons */
 .fc-toolbar .fc-button-primary {
-  background-color: #e89bb0;
+  background-color: var(--color-mint);
   border-color:  #8a5765; 
   border-width: 0px;
   color: #121212;
@@ -283,7 +283,7 @@ and the cell is displayed as a flex container to manage the layout of its childr
 }
 
 .fc-toolbar .fc-button-primary:hover {
-  background-color: #c46a83;
+  background-color: #77b8b1;
   border-color:  #a47b86; 
   border-width: 0px;
 }
@@ -292,16 +292,16 @@ and the cell is displayed as a flex container to manage the layout of its childr
 .fc .fc-button.fc-button-primary:active, 
 .fc .fc-button.fc-button-primary:focus, 
 .fc .fc-button.fc-button-primary:active:focus {
-  background-color: #c46a83 !important; /* or your desired color */
-  border-color: #c46a83 !important;
+  background-color: #77b8b1 !important; /* or your desired color */
+  /* border-color: #c46a83 !important; */
   color: #121212 !important;
 }
 
 /* Styles for the disabled state of the "today" button */
 .fc-toolbar .fc-button:disabled {
-  background-color: #7e638e; 
-  border-color: #7d5a91; 
-  border-width: 2px;
+  background-color: #77b8b1; 
+  /* border-color: #7d5a91; 
+  border-width: 2px; */
   color: #E0E0E0; 
   opacity: 0.5; 
 
