@@ -93,11 +93,16 @@ a:hover {
   margin-left: 10px; /* Adjust the margin as needed */
 }
 
-.navbar a {
-  color: var(--color-grey);
+.navbar-brand {
+  color: rgb(229 229 229);
 }
+
+.navbar a {
+  color: #bab9b9;
+}
+
 .navbar a:hover {
-  color: var(--color-muted-rose) !important;
+  color: #E0E0E0 !important;
 }
 
 .nav-link.active {
