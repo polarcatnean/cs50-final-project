@@ -242,7 +242,7 @@ function initExerciseModal() {
   
   // init exercise dropdown choices
   fetchAndPopulateExercises(document.getElementById('body-focus-2').value);
-  document.getElementById('sets').focus();
+  document.getElementById('exercise-id').focus();
   console.log(`Init dropdown for ${selectedBodyFocus}`);
 }
 
