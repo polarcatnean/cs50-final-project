@@ -276,7 +276,7 @@ and the cell is displayed as a flex container to manage the layout of its childr
 /* FullCalendar toolbar buttons */
 .fc-toolbar .fc-button-primary {
   background-color: var(--color-mint);
-  border-color:  #8a5765; 
+  border-color:  #67a39d; 
   border-width: 0px;
   color: #121212;
   font-weight: normal;
@@ -284,7 +284,7 @@ and the cell is displayed as a flex container to manage the layout of its childr
 
 .fc-toolbar .fc-button-primary:hover {
   background-color: #77b8b1;
-  border-color:  #a47b86; 
+  border-color:  #67a39d; 
   border-width: 0px;
 }
 
@@ -300,8 +300,8 @@ and the cell is displayed as a flex container to manage the layout of its childr
 /* Styles for the disabled state of the "today" button */
 .fc-toolbar .fc-button:disabled {
   background-color: #77b8b1; 
-  /* border-color: #7d5a91; 
-  border-width: 2px; */
+  border-color: #67a39d; 
+  border-width: 2px;
   color: #E0E0E0; 
   opacity: 0.5; 
 
@@ -423,10 +423,22 @@ body.modal-open {
 
 /* Flash message styles for dark theme */
 .alert {
-  background-color: #c9b9df;
-  color: #2f2b2b; 
-  border: 1px solid #6b5d73; 
-  padding: 1rem;
+  text-align: center !important;
+  display: flex;
+  align-items: center; /* Vertical alignment */
+  justify-content: center; /* Horizontal alignment */
+}
+
+.alert-secondary {
+  background-color: var(--color-dark-background);
+  color: var(--color-sky-blue);
+  border: 1px solid var(--color-sky-blue);
+}
+
+.alert-primary {
+  background-color: var(--color-dark-background);
+  color: var(--color-grey);
+  border: 1px solid var(--color-grey);
 }
 
 .dropdown-menu {

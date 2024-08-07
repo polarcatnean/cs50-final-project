@@ -284,6 +284,7 @@ function deleteWorkout(workoutId) {
       // Close the workout-detail offcanvas
       // const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
       offcanvasInstance.hide();
+      showAlert('Workout deleted', 'primary');
 
       // Remove the event from the calendar
       const event = calendar.getEventById(workoutId);
@@ -355,7 +356,7 @@ function validateWorkoutForm() {
   }
 
   if (!duration || duration <= 0) {
-    alert('Please enter correct duration');
+    showAlert('Please enter correct duration', 'primary');
     return false;
   }
 
@@ -396,6 +397,34 @@ function validateExerciseForm() {
   return true;
 }
 
+function showAlert(message, type) {
+  let alertContainer = document.getElementById('alert-container');
+  let alert = document.createElement('div');
+
+  // Insert the message
+  alert.innerHTML = [
+    `<div class="alert alert-${type} alert-dismissible fade show" role="alert">`,
+    `   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill flex-shrink-0 me-2" viewBox="0 0 16 16">
+          <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0m-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+        </svg>`,
+    `   <div>${message}</div>`,
+    '   <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>',
+    '</div>'
+  ].join('');
+
+  // Append the alert to the container
+  alertContainer.appendChild(alert);
+
+   // Manually close the alert after a few seconds
+   setTimeout(function() {
+    alert.classList.remove('show'); 
+
+    // Remove the alert from the DOM after the fade-out transition
+    setTimeout(function() {
+      alert.remove();
+    }, 150);  // This timeout matches the fade-out duration in Bootstrap
+  }, 5000);  // Adjust the delay as needed
+}
 
 
 // After DOM is loaded
@@ -702,6 +731,7 @@ function submitWorkoutForm(workoutMode) {
                 workoutName: workoutData["workout_name"]
               },
             });
+            showAlert('Workout logged.', 'primary');
             console.log("Event added to calendar");
           }
           else if (workoutMode === EDIT_MODE) {
