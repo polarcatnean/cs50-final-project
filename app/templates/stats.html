@@ -44,7 +44,7 @@
         <div class="col-sm-4 col-md-4 mb-3">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Strength Training Days</h5>
+                    <h5 class="card-title">Weight Training Days</h5>
                     <p class="card-text">
                         <span class="highlight-number-2" id="strength-days">0</span>
                     </p>
@@ -60,7 +60,7 @@
         <div class="col-sm-4 col-md-4 mb-3" id="yoga-card">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title">Yoga Days</h5>
+                    <h5 class="card-title">Stretch & Strengthen Days</h5>
                     <p class="card-text">
                         <span class="highlight-number-2" id="yoga-days">0</span>
                     </p>
@@ -79,8 +79,17 @@
                 </div>
 
                 <div class="col-12 d-flex justify-content-center mt-3 mb-3">
-                    <div class="chart-container card-img-bottom" style="position: relative; height:40vh; width:80vw">
-                        <canvas id="exercise-ratio-chart"></canvas>
+                    <div class="row w-100">
+                        <div class="col-md-6 d-flex justify-content-center mb-3">
+                            <div class="chart-container card-img-bottom" style="position: relative; height:40vh; width:100%;">
+                                <canvas id="exercise-ratio-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="col-md-6 d-flex justify-content-center mb-3">
+                            <div class="chart-container card-img-bottom" style="position: relative; height:40vh; width:100%;">
+                                <canvas id="body-days-chart"></canvas>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

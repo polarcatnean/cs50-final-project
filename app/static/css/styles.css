@@ -486,6 +486,11 @@ body.modal-open {
     font-size: 12px;
   }
 
+  .chart-container {
+    width: 80vw; /* Optional: Adjust width to fit the screen better */
+    height: 40vh; /* Optional: Adjust height for smaller screens */
+}
+
 }
 
 
