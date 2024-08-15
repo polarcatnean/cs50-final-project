@@ -106,7 +106,7 @@ a:hover {
 }
 
 .nav-link.active {
-  color: var(---color-grey) !important; /* Example text color */
+  color: var(--color-text) !important; /* Example text color */
   font-weight: bold !important; /* Example font weight */
 }
 
@@ -343,22 +343,20 @@ and the cell is displayed as a flex container to manage the layout of its childr
 }
 
 .btn-primary {
-  background-color: var(--color-blue);
-  color: var(--color-text);
+  background-color: #5766b9;
+  color: #ffffff;
   border: none;
-  /* text-decoration: none;  Remove underline */
 }
 
 .btn-primary:hover {
-  background-color: #306a88;
-  border-color: #306a88;
+  background-color: #5783db;
+  border-color: #5783db;
 }
 
 .btn-secondary-2 {
   background-color: var(--color-dark-brown);
   color: var(--color-text);
   border: none;
-  /* text-decoration: none;  Remove underline */
 }
 
 .btn-secondary-2:hover {
@@ -366,9 +364,17 @@ and the cell is displayed as a flex container to manage the layout of its childr
   border-color: #433535;
 }
 
-/* .btn-tertiary {
-  
-} */
+.btn-success {
+  background-color: #1a9185;
+  color: #ffffff;
+  border: none;
+  /* text-decoration: none;  Remove underline */
+}
+
+.btn-success:hover {
+  background-color: #20a89b;
+  border-color: #1a9185;
+}
 
 /* .btn-danger {
   background-color: var(--color-yellow);
