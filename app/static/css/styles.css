@@ -343,14 +343,14 @@ and the cell is displayed as a flex container to manage the layout of its childr
 }
 
 .btn-primary {
-  background-color: #5766b9;
+  background-color: #5baed4;
   color: #ffffff;
   border: none;
 }
 
 .btn-primary:hover {
-  background-color: #5783db;
-  border-color: #5783db;
+  background-color: #458eca;
+  border-color: #458eca;
 }
 
 .btn-secondary-2 {
@@ -365,7 +365,7 @@ and the cell is displayed as a flex container to manage the layout of its childr
 }
 
 .btn-success {
-  background-color: #1a9185;
+  background-color: #1fa56d;
   color: #ffffff;
   border: none;
   /* text-decoration: none;  Remove underline */
@@ -376,12 +376,11 @@ and the cell is displayed as a flex container to manage the layout of its childr
   border-color: #1a9185;
 }
 
-/* .btn-danger {
-  background-color: var(--color-yellow);
-  color: var(--color-text);
-  border: none;
-} */
-
+.btn:disabled {
+  background-color: #6C757D;
+  border-color: #6C757D;
+  opacity: var(--bs-btn-disabled-opacity);
+}
 
 
 /* Progress Bar */
