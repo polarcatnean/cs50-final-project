@@ -1,5 +1,5 @@
 # Workout Log Calendar
-#### Video Demo:  <URL HERE>
+#### Video Demo:  https://youtu.be/WkcoLVFvrb8
 
 
 ## Overview
