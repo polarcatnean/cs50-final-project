@@ -9,22 +9,27 @@ auth = Blueprint('auth', __name__)
 
 @auth.route("/login", methods=["GET", "POST"])
 def login():
-    session.clear() # Forget any user_id >> this clears flashed messages also, use alert instead of flash
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
+        
         if not username or not password:
             flash("Please fill out both username and password.")
             return redirect(url_for("auth.login"))
         user = db.session.scalars(db.select(User).filter_by(username=username)).first()
+
         if not user:
             flash("Username doesn't exist")
             return redirect(url_for("auth.login"))
+        
         if not check_password_hash(user.password_hash, password):
             flash("Incorrect password")
             return redirect(url_for("auth.login"))
-        flash(f"signed in as <b>@{escape(user.username)}</b>!")
+        
+        success_message = f"Signed in as&nbsp;<b>@{escape(user.username)}</b>!"
+        session.clear() # Forget any user_id >> this clears flashed messages also
         session["user_id"] = user.id
+        flash(success_message)
         return redirect("/")
     return render_template("login.html")
 
