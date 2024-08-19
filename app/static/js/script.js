@@ -527,6 +527,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       selectedWorkoutId = event.id;
       console.log(`selectedWorkoutId: ${selectedWorkoutId}`);
+      console.log(calendar.getEvents());
 
       // Fetch the workout details HTML from the server
       fetchWorkoutDetails(event.id);
@@ -730,7 +731,7 @@ function submitWorkoutForm(workoutMode) {
                 duration: workoutData["duration_min"],
                 workoutName: workoutData["workout_name"]
               },
-            });
+            }, true);
             showAlert('Workout logged.', 'primary');
             console.log("Event added to calendar");
           }
