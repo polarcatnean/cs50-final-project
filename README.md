@@ -1,5 +1,4 @@
 # Workout Log Calendar
-#### Video Demo:  https://youtu.be/WkcoLVFvrb8
 
 
 ## Overview
@@ -177,9 +176,3 @@ To run the project, follow these steps:
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 
-## Contact
-
-For any inquiries, please contact:
-
-- Email: nneann@gmail.com
-- GitHub: [polarcatnean](https://github.com/polarcatnean)
